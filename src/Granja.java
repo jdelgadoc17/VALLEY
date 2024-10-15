@@ -14,6 +14,40 @@ public class Granja {
         this.almacen = almacen;
     }
 
+    public void cambiarEstacion() {
+        switch (tipoEstacion) {
+            case PRIMAVERA:
+                tipoEstacion = TipoEstacion.VERANO;
+                break;
+            case VERANO:
+                tipoEstacion = TipoEstacion.OTOÑO;
+                break;
+            case OTOÑO:
+                tipoEstacion = TipoEstacion.INVIERNO;
+                break;
+            case INVIERNO:
+                tipoEstacion = TipoEstacion.PRIMAVERA;
+                break;
+        }
+
+        huerto.reiniciarCultivos();
+
+    }
+
+    public void avanzarDia(){
+        diaActual++;
+
+        if (diaActual > diasPorEstacion) {
+            diaActual = 1;
+            cambiarEstacion();
+        } else {
+            actualizarCultivos();
+        }
+
+        tienda.generarSemillasDisponibles(tipoEstacion);
+
+    }
+
     public int getDiaActual() {
         return diaActual;
     }
