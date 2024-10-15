@@ -1,0 +1,9 @@
+public class Granja {
+
+    private int diaActual;
+    private TipoEstacion tipoEstacion;
+    private double presupuesto;
+    private Tienda tienda;
+    private Almacen almacen;
+
+}
