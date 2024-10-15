@@ -4,11 +4,14 @@ public class Main {
 
     public static int pedOpc() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Elige una opción:");
+        System.out.println(("Elige una opcion"));;
         return sc.nextInt();
     }
 
-    public static void menuInicio() {
+
+
+
+    public static void menuInicio(){
         System.out.println("BIENVENIDO A STARDEW VALLEY");
         System.out.println("--------------------------------");
 
@@ -21,16 +24,19 @@ public class Main {
                 break;
             default:
                 System.out.println("Opción incorrecta");
-                break;
-        }
+
+
     }
 
-    public static void nuevaPartida() {
+
+
     }
 
-    public static void cargarPartida() {
-    }
 
-    public static void main(String[] args) {
+
+    public static void {main(String[] args) {
+
+
+
     }
 }
