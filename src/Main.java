@@ -15,18 +15,31 @@ public class Main {
                 avanzarDia();
                 break;
             case 2:
-                System.out.println("Salir...");
-                System.exit(0);
+                atenderCultivos();
+                break;
+            case 3:
+                plantarEnColumna();
+                break;
+            case 4:
+                venderCosecha();
+                break;
+            case 5:
+                mostrarInfo();
+                break;
+            case 6:
+                salir();
                 break;
             default:
                 System.out.println("Opción incorrecta");
-                break;
+
         }
     }
 
     public static void menuInicio() {
         System.out.println("BIENVENIDO A STARDEW VALLEY");
         System.out.println("--------------------------------");
+        System.out.println("1. NUEVA PARTIDA");
+        System.out.println("2. CARGAR PARTIDA");
 
         switch (pedOpc()) {
             case 1:
@@ -42,6 +55,7 @@ public class Main {
     }
 
     public static void nuevaPartida() {
+
     }
 
     public static void cargarPartida() {

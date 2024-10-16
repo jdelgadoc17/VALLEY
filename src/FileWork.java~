@@ -41,7 +41,7 @@ public class FileWork {
                 if(nodosemillas.getNodeType()==Node.ELEMENT_NODE){
                     Element elemento = (Element) nodosemillas; //CREAMOS UN ELEMENTO DE CADA SEMILLA SEGUN EL TIPO DE VALOR
                     int id = Integer.parseInt(elemento.getAttribute("id"));
-
+                    
                     String nombre = elemento.getElementsByTagName("nombre").item(0).getTextContent();
                     TipoEstacion estacion = TipoEstacion.valueOf(elemento.getElementsByTagName("estacion").item(0).getTextContent());
                     int diasCrecimiento = Integer.parseInt(elemento.getElementsByTagName("diasCrecimiento").item(0).getTextContent());
@@ -52,7 +52,7 @@ public class FileWork {
                     //CREAMOS LA SEMILLA
                     Semilla semilla = new Semilla(nombre, estacion, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
                     //AÑADIMOS LA SEMILLA, OBJETO, A LA LISTA
-                    semillas.put(id, semilla);
+                    semillas.add(semilla);
 
                 }
 

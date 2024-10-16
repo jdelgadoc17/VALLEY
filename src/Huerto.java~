@@ -110,7 +110,7 @@ public class Huerto {
                 if(idSemilla!=1){
 
                     if(!regado){
-                        archivoHuerto.seek(posicion+4);
+                        archivoHuerto.seek(4+4);
                         archivoHuerto.writeBoolean(true);
 
                     }

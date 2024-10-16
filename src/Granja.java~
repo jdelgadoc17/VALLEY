@@ -42,7 +42,6 @@ public class Granja {
         if (diaActual > diasPorEstacion) { //CUANTOS DIAS?
             diaActual = 1;
             cambiarEstacion();
-            reestablecerCultivos();
         } else {
             actualizarCultivos();
         }

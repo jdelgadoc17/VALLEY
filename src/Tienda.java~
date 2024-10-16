@@ -15,13 +15,12 @@ public class Tienda {
     }
 
     // Método para generar las semillas disponibles según la estación actual
+
     public void generarSemillasDisponibles(TipoEstacion estacion) {
-        // Limpiamos el mapa de semillas según la estación antes de actualizarlo
         semillasSegunEstacion.clear();
 
         // Iteramos sobre todas las semillas del mapa total y filtramos por la estación
-        for (Integer id : mapa_total_semillas.keySet()) {
-            Semilla semilla = mapa_total_semillas.get(id);
+        for (Semilla semilla : mapa_total_semillas.values()) {
             if (semilla.getEstacion() == estacion) {
                 // Añadimos la semilla al mapa de semillas según la estación
                 semillasSegunEstacion.put(id, semilla);
@@ -37,6 +36,11 @@ public class Tienda {
     // Método para obtener el mapa de semillas según la estación
     public TreeMap<Integer, Semilla> getSemillasSegunEstacion() {
         return semillasSegunEstacion;
+    }
+
+    // Método para establecer todas las semillas (si se desea modificar el mapa)
+    public void setMapa_total_semillas(TreeMap<Integer, Semilla> mapa_total_semillas) {
+        this.mapa_total_semillas = mapa_total_semillas;
     }
 
     @Override
