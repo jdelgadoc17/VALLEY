@@ -12,12 +12,12 @@ public class Almancen {
         this.mapa_fruto_semilla = new TreeMap<>();
     }
 
-    public venderFrutos(){
+    public void venderFrutos(){
         //recorrer mapa
         long gananciaTotal =0;
 
         for(Semilla semilla : mapa_fruto_semilla.values()){
-            int cadaPrecio = semilla.getPrecioVentaFruto()
+            double cadaPrecio = semilla.getPrecioVentaFruto();
 
         }
     }

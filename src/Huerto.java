@@ -30,36 +30,18 @@ public class Huerto {
         }
 
 
-        public void plantarColumna(){
-            // solo se muestran las semillas
-            //para llegar a la xoumna hay que saltar 9 bytes por la columna ddne estemos
-        //para saltar fila hay que saltar 9 bytes por cada celda
-        //algoritmo 2celdas * 9bytes  1 celda *9bytes (num de celda segun el tamaño de nuestro huerto)
-        }
 
     }
 
-
-    private void iniciarHuerto() throws IOException { //ESTE METODO ESTA BIEN
-
-        archivoHuerto.setLength(0);
-        Path path = Paths.get("Resources/archivoHuerto.dat");
-        if (!path.exists()) {
-            archivoHuerto = new RandomAccessFile(path.toFile(), "rw");
-
-            getPropiedas(string nombre){
-                retuen p.getProperties(nombre)
-            }
-
-            for(int i = 0; i <properties.getProperty("numFilas")properties.getProperty("numcolumnas); i++){
-                //INICIAR CADA CELDA DEL HUERTO
-                archivoHuerto.writeInt(-1);
-                archivoHuerto.writeBoolean(false);
-                archivoHuerto.writeInt(-1);
-            }
+    public void plantarColumna(){
+        // solo se muestran las semillas
+        //para llegar a la xoumna hay que saltar 9 bytes por la columna ddne estemos
+        //para saltar fila hay que saltar 9 bytes por cada celda
+        //algoritmo 2celdas * 9bytes  1 celda *9bytes (num de celda segun el tamaño de nuestro huerto)
+    }
 
 
-        }
+
 
 
 
@@ -72,56 +54,9 @@ public class Huerto {
     }
 
 
-    public void reestablecerCultivos(){
-        try{
-            archivoHuerto.seek(0); //comprobar si esta rellena, si esta vacia no ahce falta hacerlo
-            for(int i=0;i<filas*columnas; i++){
-                long posicion = i* TAMANNO_CELDA;
-                archivoHuerto.seek(posicion);
-                archivoHuerto.writeInt(-1);
-                archivoHuerto.writeBoolean(false);
-                archivoHuerto.writeInt(-1);
-            }
-            System.out.println("CULTIVOS REESTABLECIDOS");
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void actualizarCultivos() {
-
-        try{
-
-            archivoHuerto.seek(0);
-
-            for(int i=0;i<filas*columnas; i++){ //hay que comprobar si el cultivo no esta plantado, en ese  caso no se actualiza
-
-                long posicion = i* TAMANNO_CELDA;
-                archivoHuerto.seek(posicion);
-
-                int idSemilla = archivoHuerto.readInt();
-                boolean regado = archivoHuerto.readBoolean();
-                int diasPlantado= archivoHuerto.readInt();
-
-                if(idSemilla!=1 && regado){
-                    diasPlantado++;
-                    archivoHuerto.seek(posicion +5);
-                    archivoHuerto.writeInt(diasPlantado);
-
-                    archivoHuerto.seek(posicion+4);
-                    archivoHuerto.writeBoolean(false);
 
 
 
-                }
-
-            }
-            System.out.println("CULTIVOS ACTUALIZADOS");
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public void atenderCultivos(){
 

@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +23,25 @@ import java.util.TreeMap;
 public class FileWork {
 
 
+    // Instancia única (Singleton)
+    private static FileWork instanciaUnica;
+
+    // Constructor privado para evitar la creación de múltiples instancias
+    private FileWork() {
+    }
+
+    // Método estático para obtener la instancia única de FileWork
+    public static FileWork getInstancia() {
+        if (instanciaUnica == null) {
+            instanciaUnica = new FileWork();
+        }
+        return instanciaUnica;
+    }
+
+
+
     public TreeMap<Integer, Semilla> cargarSemillas(String xml) {
+
         TreeMap<Integer, Semilla> semillas = new TreeMap<>();
 
 
@@ -134,6 +153,17 @@ public class FileWork {
             e.printStackTrace();
         }
 
+    }
+
+
+    public Properties cargarProperties() {
+        Properties properties = new Properties();
+        try (FileInputStream input = new FileInputStream("Resources/config.properties")) {
+            properties.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return properties;
     }
 
     public static void borrarFilesIniciales() {
