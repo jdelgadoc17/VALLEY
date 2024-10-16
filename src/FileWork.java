@@ -20,21 +20,23 @@ public class FileWork {
 
 
 
-
+        //CARGAMOS LAS SEMILLAS DEL XML EN UNA LISTA A DEVOLVER
         try{
-            File archivo = new File(xml);
 
+            //PREPARAMOS EL XML
+            File archivo = new File(xml);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(xml);
 
+            //SE OBTIENEN TODOS LOS NODOS SEMILLA DEL XML
             NodeList listaSemillas = doc.getElementsByTagName("semilla");
 
             for(int i=0; i<listaSemillas.getLength(); i++){
-                Node nodosemillas = listaSemillas.item(i);
+                Node nodosemillas = listaSemillas.item(i); //CREAMOS UN NODO EN CADA ''OBJETO'' SEMILLA DEL XML
 
                 if(nodosemillas.getNodeType()==Node.ELEMENT_NODE){
-                    Element elemento = (Element) nodosemillas;
+                    Element elemento = (Element) nodosemillas; //CREAMOS UN ELEMENTO DE CADA SEMILLA SEGUN EL TIPO DE VALOR
 
                     String nombre = elemento.getElementsByTagName("nombre").item(0).getTextContent();
                     TipoEstacion estacion = TipoEstacion.valueOf(elemento.getElementsByTagName("estacion").item(0).getTextContent());
@@ -43,8 +45,9 @@ public class FileWork {
                     double precioVentaFruto = Double.parseDouble(elemento.getElementsByTagName("precioVentaFruto").item(0).getTextContent());
                     int maxFrutos = Integer.parseInt(elemento.getElementsByTagName("maxFrutos").item(0).getTextContent());
 
+                    //CREAMOS LA SEMILLA
                     Semilla semilla = new Semilla(nombre, estacion, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
-
+                    //AÑADIMOS LA SEMILLA, OBJETO, A LA LISTA
                     semillas.add(semilla);
 
                 }
@@ -54,11 +57,11 @@ public class FileWork {
 
 
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error: "+e.getMessage());
         } catch (SAXException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error: "+e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error: "+e.getMessage());
         }
 
         return  semillas;

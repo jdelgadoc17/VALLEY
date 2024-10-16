@@ -37,7 +37,7 @@ public class Granja {
     public void avanzarDia(){
         diaActual++;
 
-        if (diaActual > diasPorEstacion) {
+        if (diaActual > diasPorEstacion) { //CUANTOS DIAS?
             diaActual = 1;
             cambiarEstacion();
         } else {

@@ -9,15 +9,19 @@ public class Tienda {
         lista_total_semillas = new ArrayList<>();
         semillasSegunEstacion = new ArrayList<>();
         FileWork fileWork = new FileWork();
+
+        //SACAMOS TODAS LAS SEMILLAS DEL XML A UNA LISTA
         lista_total_semillas = fileWork.cargarSemillas("Resources/semillas.xml");
 
     }
 
+
+    //SACAMOS LAS SEMILLAS SEGUN ESTACION
     public void generarSemillasDisponibles(TipoEstacion estacion) {
 
         for (Semilla semilla : lista_total_semillas) {
             if (semilla.getEstacion() == estacion) {
-                semillasEnEstacion.add(semilla);
+                semillasSegunEstacion.add(semilla);
             }
         }
     }
