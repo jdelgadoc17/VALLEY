@@ -62,7 +62,6 @@ public class Main {
                 //BORRAR TODA LA GRANJA PREVIA (EL BINARIO), EL HUERTO Y EL PROP PERSONALZIADO FUERA TMB
                 //PERIMITIER QUE EL USUARIO HAGA SU PROPIO PROERTIES PREGUNTANDALO AL USUARIO
                 //inicialziar l granajy  le huerto
-                iniciarHuerto();
                 elegirPropiedades();
                 break;
             case 2:

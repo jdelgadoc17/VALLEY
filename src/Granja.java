@@ -14,6 +14,11 @@ public class Granja {
         this.almacen = almacen;
     }
 
+    public void venderFruta(){
+
+
+    }
+
     public void cambiarEstacion() {
         switch (tipoEstacion) {
             case PRIMAVERA:
@@ -36,7 +41,7 @@ public class Granja {
 
 
 
-    public void avanzarDia(){
+    public void iniciarNuevoDia(){
         diaActual++;
 
         if (diaActual > diasPorEstacion) { //CUANTOS DIAS?
@@ -47,7 +52,7 @@ public class Granja {
             actualizarCultivos();
         }
 
-        tienda.generarSemillasDisponibles(tipoEstacion);
+        tienda.generarSemillasDisponibles(tipoEstacion); //y de esas tres sacar tres semillas
 
     }
 

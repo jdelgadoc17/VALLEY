@@ -9,17 +9,21 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Properties;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 public class FileWork {
 
 
     public TreeMap<Integer, Semilla> cargarSemillas(String xml) {
-        TreeMap<Integer, Semilla> semillas = new TreeMap<>()
+        TreeMap<Integer, Semilla> semillas = new TreeMap<>();
 
 
 
@@ -72,4 +76,86 @@ public class FileWork {
 
 
     }
+
+
+    public static int pedFilas() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce el número de filas:");
+        return sc.nextInt();
+    }
+    public static int pedColumnas() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce el número de columnas:");
+        return sc.nextInt();
+    }
+
+    public static int pedPresupuesto() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce el presupuesto inicial:");
+        return sc.nextInt();
+    }
+
+    public static String pedEstacion() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce la estación inicial:");
+        return sc.nextLine();
+    }
+
+    public static int pedDiasEstacion() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce los días de la estación:");
+        return sc.nextInt();
+    }
+
+    public static void configurarProperties(){
+        System.out.println("Vamos a añadir una nueva configuración");
+
+        int numFilas = pedFilas();
+        int numColumnas = pedColumnas();
+        int presupuestoInicial = pedPresupuesto();
+        String estacionicial = pedEstacion();
+        int diasduracionestacion = pedDiasEstacion();
+
+        Properties properties = new Properties();
+        properties.setProperty("numFilas", String.valueOf(numFilas));
+        properties.setProperty("numColumnas", String.valueOf(numColumnas));
+        properties.setProperty("presupuestoInicial", String.valueOf(presupuestoInicial));
+        properties.setProperty("estacionInicial", String.valueOf(estacionicial));
+        properties.setProperty("diasDuracionEstacion", String.valueOf(diasduracionestacion));
+
+        File directory = new File("Resources");
+        if (!directory.exists()) {
+            directory.mkdir();
+        }
+        try (FileOutputStream output = new FileOutputStream("Resources/config.properties")) {
+            properties.store(output, "Configuración del Juego");
+            System.out.println("Configuración guardada exitosamente en 'config.properties'.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void borrarFilesIniciales() {
+        Path path1 = Paths.get("Resources/stardam_valley.bin");
+        Path path2 = Paths.get("Resources/huerto.dat");
+        Path path3 = Paths.get("Resources/config.properties");
+
+        try {
+            if (Files.exists(path1)) {
+                Files.delete(path1);
+            }
+            if (Files.exists(path2)) {
+                Files.delete(path2);
+            }
+            if (Files.exists(path3)) {
+                Files.delete(path3);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

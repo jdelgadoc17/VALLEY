@@ -2,6 +2,11 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class Huerto {
+//ESTA CLASE NO HAY QUE HACERLA SE TRABAAJ SOLO POR EL RAF
+    //EL CREAR EL JUEGO SE CREA EL FICHERO CON LAS FILAS Y COLUMNAS DADAS EN PROP
+
+
+
 
     private RandomAccessFile archivoHuerto;
     private int filas;
@@ -21,12 +26,23 @@ public class Huerto {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+        public void plantarColumna(){
+            // solo se muestran las semillas
+            //para llegar a la xoumna hay que saltar 9 bytes por la columna ddne estemos
+        //para saltar fila hay que saltar 9 bytes por cada celda
+        //algoritmo 2celdas * 9bytes  1 celda *9bytes (num de celda segun el tamaño de nuestro huerto)
+        }
+
     }
 
 
-    private void iniciarHuerto() throws IOException {
+    private void iniciarHuerto() throws IOException { //ESTE METODO ESTA BIEN
 
         archivoHuerto.setLength(0);
+
+        //segun las filas y columans de larchivo properties
 
         for(int i = 0; i <filas*columnas; i++){
             //INICIAR CADA CELDA DEL HUERTO
@@ -45,7 +61,7 @@ public class Huerto {
 
     public void reestablecerCultivos(){
         try{
-            archivoHuerto.seek(0);
+            archivoHuerto.seek(0); //comprobar si esta relena, si esta vacia no ahce falta hacerlo
             for(int i=0;i<filas*columnas; i++){
                 long posicion = i* TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
@@ -65,7 +81,7 @@ public class Huerto {
 
             archivoHuerto.seek(0);
 
-            for(int i=0;i<filas*columnas; i++){
+            for(int i=0;i<filas*columnas; i++){ //hay que comprobar si el cultivo no esta plantado, en ese  caso no se actualiza
 
                 long posicion = i* TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
@@ -119,12 +135,12 @@ public class Huerto {
 
                     if(semilla!=null && diasPlantado>=semilla.getDiasCrecimiento()){
 
-                        int frutosRecolectados = semilla.getMaxFrutos();
+                        int frutosRecolectados = semilla.getMaxFrutos(); //generar lateatoriuoi segun el maxfrutos y esos guardarlos como frutos
                         almacen.agregarFrutos(semilla.getNombre(), frutosRecolectados);
 
                         //PONER DE NUEVO VALORES POR DEFECTO AL RECOLECTAR ESA CELDA-SEMILLA
                         //LA PONEMOS VACIA DE NUEVO
-                        archivoHuerto.seek(posicion);
+                        archivoHuerto.seek(posicion); //est ovulve a tras?
                         archivoHuerto.writeInt(-1);
                         archivoHuerto.writeBoolean(false);
                         archivoHuerto.writeInt(-1);
@@ -148,6 +164,7 @@ public class Huerto {
 
 
     }
+
 
 
     public Semilla obtenerSemilla(int idSemilla) {
