@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Semilla {
     /*atributos:
     *
@@ -9,16 +11,16 @@ public class Semilla {
         <maxFrutos></maxFrutos>*/
 
     private String nombre;
-    private TipoEstacion estacion;
+    private ArrayList<TipoEstacion> estacion;
     private int diasCrecimiento;
     private double precioCompraSemilla;
     private double precioVentaFruto;
     private int maxFrutos;
 
 
-    public Semilla(String nombre, TipoEstacion estacion, int diasCrecimiento, double precioCompraSemilla, double precioVentaFruto, int maxFrutos) {
+    public Semilla(String nombre, ArrayList<TipoEstacion> estaciones, int diasCrecimiento, double precioCompraSemilla, double precioVentaFruto, int maxFrutos) {
         this.nombre = nombre;
-        this.estacion = estacion;
+        this.estacion = estaciones;  // Ahora acepta un ArrayList de estaciones
         this.diasCrecimiento = diasCrecimiento;
         this.precioCompraSemilla = precioCompraSemilla;
         this.precioVentaFruto = precioVentaFruto;
@@ -34,12 +36,12 @@ public class Semilla {
         this.nombre = nombre;
     }
 
-    public TipoEstacion getEstacion() {
+    public ArrayList<TipoEstacion> getEstacion() {
         return estacion;
     }
 
-    public void setEstacion(TipoEstacion estacion) {
-        this.estacion = estacion;
+    public void setEstacion(ArrayList<TipoEstacion> estaciones) {
+        this.estacion = estaciones;
     }
 
     public int getDiasCrecimiento() {

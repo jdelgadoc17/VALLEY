@@ -7,7 +7,7 @@ import java.util.Properties;
 public class Granja {
     private static final int TAMANNO_CELDA = Integer.BYTES+1+Integer.BYTES;
 
-
+        //CREAR CONSTANTES
     private int diaActual;
     private TipoEstacion tipoEstacion;
     private double presupuesto;
@@ -36,28 +36,21 @@ public class Granja {
 
 
     public void iniciarHuerto() throws IOException {
-        // Obtener la instancia única de FileWork (Singleton)
         FileWork fileWork = FileWork.getInstancia();
-
-        // Cargar las propiedades desde el archivo config.properties
         Properties properties = fileWork.cargarProperties();
 
-        // Obtener las filas y columnas desde las propiedades
         int filas = Integer.parseInt(properties.getProperty("numFilas"));
         int columnas = Integer.parseInt(properties.getProperty("numColumnas"));
 
-        // Verificar si el archivo huerto ya existe
         Path path = Paths.get("Resources/archivoHuerto.dat");
         if (!path.toFile().exists()) {
-            // Crear el archivo si no existe
             archivoHuerto = new RandomAccessFile(path.toFile(), "rw");
             archivoHuerto.setLength(0);
 
-            // Inicializar cada celda del huerto según las propiedades
             for (int i = 0; i < filas * columnas; i++) {
-                archivoHuerto.writeInt(-1); // ID de semilla (-1 indica vacío)
-                archivoHuerto.writeBoolean(false); // Estado de regado
-                archivoHuerto.writeInt(-1); // Días plantado (-1 indica sin cultivo)
+                archivoHuerto.writeInt(-1);
+                archivoHuerto.writeBoolean(false);
+                archivoHuerto.writeInt(-1);
             }
 
             System.out.println("Huerto inicializado con " + filas + " filas y " + columnas + " columnas.");
@@ -65,12 +58,47 @@ public class Granja {
     }
 
 
+
     public void plantarColumna(){
+        FileWork fileWork = FileWork.getInstancia();
+        Properties properties = fileWork.cargarProperties();
+        int filas = Integer.parseInt(properties.getProperty("numFilas"));
+        int columnas = Integer.parseInt(properties.getProperty("numColumnas"));
+
+        for(){
+            int x = (int) (Math.random() * filas);
+            int y = (int) (Math.random() * columnas);
+            long posicion = (x * columnas + y) * TAMANNO_CELDA;
+            archivoHuerto.seek(posicion);
+
+            int idSemilla = fileWork.pedSemilla();
+            if (idSemilla!= -1 && presupuesto >= fileWork.pedPrecioSemilla(idSemilla)) {
+                archivoHuerto.writeInt(idSemilla);
+                archivoHuerto.writeBoolean(true);
+                archivoHuerto.writeInt(0);
+                presupuesto -= fileWork.pedPrecioSemilla(idSemilla);
+
+                System.out.println("Semilla plantada en la celda (" + x + "," + y + ").");
+            } else {
+                System.out.println("No hay suficiente dinero
+        }
+
+
+
+
         // solo se muestran las semillas
         //para llegar a la xoumna hay que saltar 9 bytes por la columna ddne estemos
         //para saltar fila hay que saltar 9 bytes por cada celda
         //algoritmo 2celdas * 9bytes  1 celda *9bytes (num de celda segun el tamaño de nuestro huerto)
+
     }
+
+
+
+
+
+
+
 
 
 
@@ -89,13 +117,11 @@ public class Granja {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                // Si hay una semilla plantada (id != -1) y fue regada
                 if (idSemilla != -1 && regado) {
                     diasPlantado++;
-                    archivoHuerto.seek(posicion + 5); // Posición para escribir los días plantados
+                    archivoHuerto.seek(posicion + 5);
                     archivoHuerto.writeInt(diasPlantado);
-
-                    archivoHuerto.seek(posicion + 4); // Restablecer regado a false
+                    archivoHuerto.seek(posicion + 4);
                     archivoHuerto.writeBoolean(false);
                 }
             }
@@ -106,7 +132,7 @@ public class Granja {
     }
 
 
-
+    //PASAR POR PAREMTRO EL MAPA DE TODAS LAS SEMILALS CARGADAS (ESTA EN LA TIENDA) PARA SACAR EL ID AL VER SI SE PUEDE COSECHAR
     public void atenderCultivos(Path path) {
         FileWork fileWork = FileWork.getInstancia();
         Properties properties = fileWork.cargarProperties();
@@ -138,7 +164,7 @@ public class Granja {
                     if (semilla != null && diasPlantado >= semilla.getDiasCrecimiento()) {
                         // Generar frutos de manera aleatoria hasta el máximo
                         int frutosRecolectados = (int) (Math.random() * semilla.getMaxFrutos()) + 1;
-                        almacen.agregarFrutos(semilla.getNombre(), frutosRecolectados);
+                        almacen.annadirCosecha(semilla.getNombre(), frutosRecolectados);
 
                         // Restablecer la celda a su estado predeterminado
                         archivoHuerto.seek(posicion);
@@ -216,7 +242,7 @@ public class Granja {
             actualizarCultivos();
         }
 
-        tienda.generarSemillasDisponibles(tipoEstacion); //y de esas tres sacar tres semillas
+        tienda.generarSemillasDisponibles(tipoEstacion); //y de esas tres sacar tres semillas O UN METODO ENTERO GENERAR_TIENDA() CON 3 random de esa estacion
 
     }
 

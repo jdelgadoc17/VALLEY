@@ -8,9 +8,7 @@ public class Tienda {
     public Tienda() {
         mapa_total_semillas = new TreeMap<>();
         semillasSegunEstacion = new TreeMap<>();
-
-        FileWork fileWork = new FileWork();
-        mapa_total_semillas = fileWork.cargarSemillas("Resources/semillas.xml");
+        mapa_total_semillas = FileWork.cargarSemillas("Resources/semillas.xml");
     }
         //AL COMPRRAR SEMILLAS, SOLO SE MUESTRAN LAS DISPONIBLES SEGUN EL PRESUPUESTO
 
@@ -24,6 +22,12 @@ public class Tienda {
             }
         }
     }
+
+    //METODO VENDER SEMILALS PASANDOEL EL DINERO Y EL NUMERO DE SEMILALS NECESARIAS
+
+
+
+
 
     public TreeMap<Integer, Semilla> getMapa_total_semillas() {
         return mapa_total_semillas;

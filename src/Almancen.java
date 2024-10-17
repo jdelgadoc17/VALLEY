@@ -2,11 +2,11 @@ import java.util.TreeMap;
 
 public class Almancen {
 
-    private TreeMap<Integer, Semilla> mapa_fruto_semilla;
+    private TreeMap<Semilla, Integer> mapa_fruto_semilla;
     //AL COSECHAR METER LA SEMILLA ENTERA, LA CLAVE DEL MAPA LA SEMILLA, GUARDAS LAS SEMILLAS Y SE MUESTRAN
 
 
-
+    //pasar al almacen lo que se cosecha annadirCosecha()
 
     public Almancen() {
         this.mapa_fruto_semilla = new TreeMap<>();

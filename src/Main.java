@@ -30,6 +30,7 @@ public class Main {
             System.out.println("5. Mostrar Información de la Granja");
             System.out.println("6. Salir");
 
+
             switch (pedOpc()) {
                 case 1:
                     granja.iniciarNuevoDia();
