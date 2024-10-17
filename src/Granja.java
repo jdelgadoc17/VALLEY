@@ -107,11 +107,13 @@ public class Granja {
 
 
 
-    public void atenderCultivos() {
+    public void atenderCultivos(Path path) {
         FileWork fileWork = FileWork.getInstancia();
         Properties properties = fileWork.cargarProperties();
         int filas = Integer.parseInt(properties.getProperty("numFilas"));
         int columnas = Integer.parseInt(properties.getProperty("numColumnas"));
+
+        Path archivoHuerto = Paths.get(path.toUri());
 
         try {
             archivoHuerto.seek(0);

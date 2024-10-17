@@ -24,7 +24,7 @@ public class FileWork {
 
 
     // Instancia única (Singleton)
-    private static FileWork instanciaUnica;
+    protected static FileWork instanciaUnica;
 
     // Constructor privado para evitar la creación de múltiples instancias
     private FileWork() {
@@ -126,34 +126,56 @@ public class FileWork {
         return sc.nextInt();
     }
 
-    public static void configurarProperties(){
+    public static void cargarPropertiesDefault() {
+        Properties properties = new Properties();
+        properties.setProperty("numFilas", "5");  // Configuración por defecto
+        properties.setProperty("numColumnas", "6");
+        properties.setProperty("presupuestoInicial", "1000");
+        properties.setProperty("estacionInicial", "Verano");
+        properties.setProperty("diasDuracionEstacion", "30");
+
+        File directory = new File("Resources");
+        if (!directory.exists()) {
+            directory.mkdir();  // Crear la carpeta si no existe
+        }
+        try (FileOutputStream output = new FileOutputStream("Resources/config.properties")) {
+            properties.store(output, "Configuración por defecto del juego");
+            System.out.println("Configuración por defecto guardada exitosamente en 'config.properties'.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public static void configurarProperties() {
         System.out.println("Vamos a añadir una nueva configuración");
 
         int numFilas = pedFilas();
         int numColumnas = pedColumnas();
         int presupuestoInicial = pedPresupuesto();
-        String estacionicial = pedEstacion();
-        int diasduracionestacion = pedDiasEstacion();
+        String estacionInicial = pedEstacion();
+        int diasDuracionEstacion = pedDiasEstacion();
 
         Properties properties = new Properties();
         properties.setProperty("numFilas", String.valueOf(numFilas));
         properties.setProperty("numColumnas", String.valueOf(numColumnas));
         properties.setProperty("presupuestoInicial", String.valueOf(presupuestoInicial));
-        properties.setProperty("estacionInicial", String.valueOf(estacionicial));
-        properties.setProperty("diasDuracionEstacion", String.valueOf(diasduracionestacion));
+        properties.setProperty("estacionInicial", estacionInicial);
+        properties.setProperty("diasDuracionEstacion", String.valueOf(diasDuracionEstacion));
 
         File directory = new File("Resources");
         if (!directory.exists()) {
-            directory.mkdir();
+            directory.mkdir();  // Crear la carpeta si no existe
         }
         try (FileOutputStream output = new FileOutputStream("Resources/config.properties")) {
             properties.store(output, "Configuración del Juego");
-            System.out.println("Configuración guardada exitosamente en 'config.properties'.");
+            System.out.println("Configuración personalizada guardada exitosamente en 'config.properties'.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
 
 
     public Properties cargarProperties() {
@@ -165,6 +187,7 @@ public class FileWork {
         }
         return properties;
     }
+
 
     public static void borrarFilesIniciales() {
         Path path1 = Paths.get("Resources/stardam_valley.bin");
