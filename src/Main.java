@@ -60,26 +60,25 @@ public class Main {
 
 
 
-    public static void elegirPropiedades() {
+    public static void elegirPropiedades() throws IOException {
         System.out.println("¿Deseas usar la configuración por defecto o personalizar?");
         System.out.println("1. Configuración por defecto");
         System.out.println("2. Configuración personalizada");
 
-        switch (pedOpc()) {
-            case 1:
-                System.out.println("Usando configuración por defecto...");
-                FileWork.cargarPropertiesDefault();
-                break;
-            case 2:
-                System.out.println("Personalizando configuración...");
-                FileWork.configurarProperties();
-                break;
-            default:
-                System.out.println("Opción incorrecta. Usando configuración por defecto.");
-                FileWork.cargarPropertiesDefault();
-                break;
+        int opcion = pedOpc();
+
+        if (opcion == 1) {
+            System.out.println("Usando configuración por defecto...");
+            FileWork.cargarPropertiesDefault();
+        } else if (opcion == 2) {
+            System.out.println("Personalizando configuración...");
+            FileWork.configurarProperties();
+        } else {
+            System.out.println("Opción incorrecta. Volviendo al menú de inicio.");
+            menuInicio();
         }
     }
+
 
 
 
@@ -99,20 +98,22 @@ public class Main {
                     cargarPartida();  // Cargar la partida si existe el archivo
                 } else {
                     System.out.println("No se encontró ninguna partida guardada.");
-                    menuInicio();  // Volver al menú de inicio
+                    nuevaPartida();
                 }
                 break;
             default:
                 System.out.println("Opción incorrecta. Por favor elige una opción válida.");
-                menuInicio(); // Repetir el menú si se elige una opción incorrecta
                 break;
         }
     }
 
 
     public static void nuevaPartida() throws IOException {
-        elegirPropiedades();
+        FileWork.borrarFilesIniciales();
 
+        Path path = Paths.get("Resources/huerto.dat");
+
+        elegirPropiedades();
         FileWork fileWork = FileWork.getInstancia();
         Properties properties = fileWork.cargarProperties();
         int diaActual = 1;
@@ -121,8 +122,7 @@ public class Main {
 
         Granja granja = new Granja(diaActual, tipoEstacion, presupuesto, new Tienda(), new Almacen());
 
-        FileWork.borrarFilesIniciales();
-        granja.iniciarHuerto();
+        granja.crearHuerto(path);
 
         jugar(granja);
 
@@ -131,22 +131,27 @@ public class Main {
     public static void cargarPartida() {
         Path path = Paths.get("Resources/huerto.dat");
 
-        try {
-            FileInputStream file = new FileInputStream(path.toFile());
-            ObjectInputStream objectInput = new ObjectInputStream(file);
-            Granja granja = (Granja) objectInput.readObject();
-            objectInput.close();
-            file.close();
+        if (Files.exists(path)) {
+            try {
+                FileInputStream file = new FileInputStream(path.toFile());
+                ObjectInputStream objectInput = new ObjectInputStream(file);
+                Granja granja = (Granja) objectInput.readObject();
+                objectInput.close();
+                file.close();
 
-            System.out.println("Partida cargada correctamente.");
-            jugar(granja);
+                System.out.println("Partida cargada correctamente.");
 
-        } catch (IOException e) {
-            System.out.println("Error al cargar la partida: " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.out.println("Clase no encontrada al cargar la partida: " + e.getMessage());
+                jugar(granja);
+
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Error al cargar la partida: " + e.getMessage());
+            }
+        } else {
+            System.out.println("No se encontró ningún archivo de huerto.");
+            menuInicio();  // Volver al menú de inicio
         }
     }
+
 
 
     public static void main(String[] args) {

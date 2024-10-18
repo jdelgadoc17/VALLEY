@@ -17,9 +17,14 @@ public class Tienda {
 
         for (Integer id : mapa_total_semillas.keySet()) {
             Semilla semilla = mapa_total_semillas.get(id);
-            if (semilla.getEstacion() == estacion) {
-                semillasSegunEstacion.put(id, semilla);
+
+            for(Semilla tipo : semilla.getEstacion()){ //el Tipo estacion es un array lsit de estaciones
+                if (semilla.getEstacion() == estacion) {
+                    semillasSegunEstacion.put(id, semilla);
+                }
+
             }
+
         }
     }
 
