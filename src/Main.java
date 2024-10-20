@@ -16,10 +16,16 @@ public class Main {
         return sc.nextInt();
     }
 
+    public static int pedColumna() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Elige una columna donde plantar:");
+        return sc.nextInt();
+    }
+
     public static void jugar(Granja granja) {
         boolean jugando = true;
 
-        Path path = Paths.get("Resources/huerto.dat");
+        Path path = Paths.get("VALLEY/Resources/archivoHuerto.dat");
 
         while (jugando) {
             System.out.println("Elige una opción:");
@@ -39,15 +45,17 @@ public class Main {
                     granja.atenderCultivos(path);
                     break;
                 case 3:
-                    granja.plantarEnColumna();
+                    int col = pedColumna();
+                    granja.plantarEnColumna(col);
                     break;
                 case 4:
-                    granja.venderCosecha();
+                    //granja.venderCosecha();
                     break;
                 case 5:
                     granja.mostrarInfo();
                     break;
                 case 6:
+                    Granja.guardarPartida(granja);
                     jugando = false;
                     System.out.println("¡Gracias por jugar!");
                     break;
@@ -93,7 +101,7 @@ public class Main {
                 nuevaPartida();
                 break;
             case 2:
-                Path path = Paths.get("Resources/huerto.dat");
+                Path path = Paths.get("VALLEY/Resources/archivoHuerto.dat");
                 if (Files.exists(path)) {
                     cargarPartida();  // Cargar la partida si existe el archivo
                 } else {
@@ -111,7 +119,7 @@ public class Main {
     public static void nuevaPartida() throws IOException {
         FileWork.borrarFilesIniciales();
 
-        Path path = Paths.get("Resources/huerto.dat");
+        Path path = Paths.get("VALLEY/Resources/archivoHuerto.dat");
 
         elegirPropiedades();
         FileWork fileWork = FileWork.getInstancia();
@@ -122,14 +130,14 @@ public class Main {
 
         Granja granja = new Granja(diaActual, tipoEstacion, presupuesto, new Tienda(), new Almacen());
 
-        granja.crearHuerto(path);
+        granja.crearHuerto(Paths.get("VALLEY/Resources/archivoHuerto.dat"));
 
         jugar(granja);
 
     }
 
-    public static void cargarPartida() {
-        Path path = Paths.get("Resources/huerto.dat");
+    public static void cargarPartida() throws IOException {
+        Path path = Paths.get("VALLEY/Resources/archivoHuerto.dat");
 
         if (Files.exists(path)) {
             try {

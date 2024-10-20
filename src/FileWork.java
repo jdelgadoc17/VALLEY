@@ -8,10 +8,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,7 +17,7 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-public class FileWork {
+public class FileWork implements Serializable {
 
 
     // Instancia única (Singleton)
@@ -74,12 +71,6 @@ public class FileWork {
                         estaciones.add(TipoEstacion.valueOf(estacion.trim().toUpperCase()));
                     }
 
-
-
-
-
-
-
                     int diasCrecimiento = Integer.parseInt(elemento.getElementsByTagName("diasCrecimiento").item(0).getTextContent());
                     double precioCompraSemilla = Double.parseDouble(elemento.getElementsByTagName("precioCompraSemilla").item(0).getTextContent());
                     double precioVentaFruto = Double.parseDouble(elemento.getElementsByTagName("precioVentaFruto").item(0).getTextContent());
@@ -89,9 +80,11 @@ public class FileWork {
                     Semilla semilla = new Semilla(nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
 
                     // AÑADIMOS LA SEMILLA A LA LISTA
+
                     semillas.put(id, semilla);
                 }
             }
+            System.out.println("SEMILLAS CARGADAS CON EXITO");
 
         } catch (ParserConfigurationException e) {
             System.out.println("Error: " + e.getMessage());
@@ -144,10 +137,10 @@ public class FileWork {
         Properties properties = new Properties(); //SACAR LOS DATOS DEL ARCHIVO QUE YA EXISTE
 
 
-        properties.setProperty("numFilas", "5");  // Configuración por defecto
-        properties.setProperty("numColumnas", "6");
+        properties.setProperty("numFilas", "4");  // Configuración por defecto
+        properties.setProperty("numColumnas", "4");
         properties.setProperty("presupuestoInicial", "1000");
-        properties.setProperty("estacionInicial", "Verano");
+        properties.setProperty("estacionInicial", "primavera");
         properties.setProperty("diasDuracionEstacion", "30");
 
         File directory = new File("Resources");
@@ -155,10 +148,11 @@ public class FileWork {
         if (!directory.exists()) {
             directory.mkdir();  // Crear la carpeta si no existe
         }
-        try (FileOutputStream output = new FileOutputStream("Resources/config.properties")) {
+        try (FileOutputStream output = new FileOutputStream("VALLEY/Resources/default_config.properties")) {
             properties.store(output, "Configuración por defecto del juego");
-            System.out.println("Configuración por defecto guardada exitosamente en 'config.properties'.");
+            System.out.println("Configuración por defecto guardada exitosamente en 'default_config.properties'.");
         } catch (IOException e) {
+            System.out.println("aqui");
             e.printStackTrace();
         }
     }
@@ -181,13 +175,13 @@ public class FileWork {
         properties.setProperty("estacionInicial", estacionInicial);
         properties.setProperty("diasDuracionEstacion", String.valueOf(diasDuracionEstacion));
 
-        File directory = new File("Resources");
+        File directory = new File("VALLEY/Resources");
         if (!directory.exists()) {
             directory.mkdir();  // Crear la carpeta si no existe
         }
-        try (FileOutputStream output = new FileOutputStream("Resources/config.properties")) {
+        try (FileOutputStream output = new FileOutputStream("VALLEY/Resources/personal_config.properties")) {
             properties.store(output, "Configuración del Juego");
-            System.out.println("Configuración personalizada guardada exitosamente en 'config.properties'.");
+            System.out.println("Configuración personalizada guardada exitosamente en 'personal_config.properties'.");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -197,7 +191,7 @@ public class FileWork {
 
     public Properties cargarProperties() {
         Properties properties = new Properties();
-        try (FileInputStream input = new FileInputStream("Resources/config.properties")) {
+        try (FileInputStream input = new FileInputStream("VALLEY/Resources/default_config.properties")) {
             properties.load(input);
         } catch (IOException e) {
             e.printStackTrace();
@@ -207,9 +201,11 @@ public class FileWork {
 
 
     public static void borrarFilesIniciales() {
-        Path path1 = Paths.get("Resources/stardam_valley.bin");
-        Path path2 = Paths.get("Resources/huerto.dat");
-        Path path3 = Paths.get("Resources/config.properties");
+        Path path1 = Paths.get("VALLEY/Resources/stardam_valley.bin");
+        Path path2 = Paths.get("VALLEY/Resources/huerto.dat");
+        Path path3 = Paths.get("VALLEY/Resources/default_config.properties");
+        Path path4 = Paths.get("VALLEY/Resources/personal_config.properties");
+
 
         try {
             if (Files.exists(path1)) {
@@ -220,6 +216,9 @@ public class FileWork {
             }
             if (Files.exists(path3)) {
                 Files.delete(path3);
+            }
+            if (Files.exists(path4)) {
+                Files.delete(path4);
             }
         } catch (IOException e) {
             e.printStackTrace();

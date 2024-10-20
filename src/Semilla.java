@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Semilla {
+public class Semilla  implements Serializable {
     /*atributos:
     *
     * <nombre></nombre>

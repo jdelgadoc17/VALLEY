@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class Almacen {
+public class Almacen  implements Serializable {
 
     private TreeMap<Semilla, Integer> mapaFrutoSemilla;
 
@@ -16,6 +17,17 @@ public class Almacen {
         } else {
             mapaFrutoSemilla.put(semilla, cantidad);
         }
+    }
+
+    public int getTotalFruto() {
+        int totalFrutos = 0;
+
+        // Recorremos el mapa y sumamos la cantidad de frutos para cada tipo de semilla
+        for (Map.Entry<Semilla, Integer> entrada : mapaFrutoSemilla.entrySet()) {
+            totalFrutos += entrada.getValue();
+        }
+
+        return totalFrutos;
     }
 
     // Método para vender todos los frutos almacenados
