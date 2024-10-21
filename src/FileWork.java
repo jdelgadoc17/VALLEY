@@ -78,7 +78,7 @@ public class FileWork implements Serializable {
                     int maxFrutos = Integer.parseInt(elemento.getElementsByTagName("maxFrutos").item(0).getTextContent());
 
                     // CREAMOS LA SEMILLA CON MÚLTIPLES ESTACIONES
-                    Semilla semilla = new Semilla(nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
+                    Semilla semilla = new Semilla(id, nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
 
                     // AÑADIMOS LA SEMILLA A LA LISTA
 

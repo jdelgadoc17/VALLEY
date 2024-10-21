@@ -144,13 +144,13 @@ public class FileWork implements Serializable {
         properties.setProperty("diasDuracionEstacion", "30");
 
         // Crear el directorio si no existe
-        File directory = new File("VALLEY/Resources");
+        File directory = new File("Resources");
         if (!directory.exists()) {
             directory.mkdirs();  // Crear directorios intermedios si no existen
 
         }
 
-        try (FileOutputStream output = new FileOutputStream("VALLEY/Resources/default_config.properties")) {
+        try (FileOutputStream output = new FileOutputStream("Resources/default_config.properties")) {
             properties.store(output, "Configuración por defecto del juego");
             System.out.println("Configuración por defecto guardada exitosamente en 'default_config.properties'.");
         } catch (IOException e) {
@@ -178,11 +178,11 @@ public class FileWork implements Serializable {
         properties.setProperty("estacionInicial", estacionInicial);
         properties.setProperty("diasDuracionEstacion", String.valueOf(diasDuracionEstacion));
 
-        File directory = new File("VALLEY/Resources");
+        File directory = new File("Resources");
         if (!directory.exists()) {
             directory.mkdir();  // Crear la carpeta si no existe
         }
-        try (FileOutputStream output = new FileOutputStream("VALLEY/Resources/personal_config.properties")) {
+        try (FileOutputStream output = new FileOutputStream("Resources/personal_config.properties")) {
             properties.store(output, "Configuración del Juego");
             System.out.println("Configuración personalizada guardada exitosamente en 'personal_config.properties'.");
         } catch (IOException e) {
@@ -194,7 +194,7 @@ public class FileWork implements Serializable {
 
     public Properties cargarProperties() {
         Properties properties = new Properties();
-        try (FileInputStream input = new FileInputStream("VALLEY/Resources/default_config.properties")) {
+        try (FileInputStream input = new FileInputStream("Resources/default_config.properties")) {
             properties.load(input);
         } catch (IOException e) {
             e.printStackTrace();

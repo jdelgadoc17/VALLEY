@@ -82,7 +82,6 @@ public class Semilla  implements Serializable {
     @Override
     public String toString() {
         return "Semilla{" +
-                "id=" + id +
                 "nombre='" + nombre + '\'' +
                 ", estacion=" + estacion +
                 ", diasCrecimiento=" + diasCrecimiento +

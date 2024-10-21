@@ -8,6 +8,8 @@ public class Tienda implements Serializable {
     private TreeMap<Integer, Semilla> mapa_total_semillas;
     private TreeMap<Integer, Semilla> semillasSegunEstacion;
 
+
+
     public Tienda() {
         mapa_total_semillas = new TreeMap<>();
         semillasSegunEstacion = new TreeMap<>();
@@ -16,6 +18,8 @@ public class Tienda implements Serializable {
 
     public void generarSemillasDisponibles(TipoEstacion estacion, double presupuesto) {
         semillasSegunEstacion.clear();
+
+
 
         for (Integer id : mapa_total_semillas.keySet()) {
             Semilla semilla = mapa_total_semillas.get(id);
@@ -44,7 +48,7 @@ public class Tienda implements Serializable {
 
         if (presupuesto >= precioTotal) {
             presupuesto -= precioTotal;
-            System.out.println("Has comprado " + cantidad + " semillas de " + semilla.getNombre() + " por " + precioTotal + " euros.");
+            System.out.println("Has comprado" + cantidad + " semillas de " + semilla.getNombre() + " por " + precioTotal + " euros.");
             return true;
         } else {
             System.out.println("No tienes suficiente dinero para comprar " + cantidad + " semillas de " + semilla.getNombre() + ".");
