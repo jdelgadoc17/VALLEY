@@ -10,6 +10,8 @@ public class Tienda {
         semillasSegunEstacion = new TreeMap<>();
         mapa_total_semillas = FileWork.cargarSemillas("Resources/semillas.xml");
     }
+
+
         //AL COMPRRAR SEMILLAS, SOLO SE MUESTRAN LAS DISPONIBLES SEGUN EL PRESUPUESTO
 
     public void generarSemillasDisponibles(TipoEstacion estacion) {
