@@ -138,7 +138,6 @@ public class Granja implements Serializable  {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
 
-        //Mostrar las celdas del huerto
 
         try{
 
@@ -152,10 +151,15 @@ public class Granja implements Serializable  {
                 int diasPlantado = archivoHuerto.readInt();
 
                 if(idSemilla==-1){
-                    System.out.println("[SS]");
-                }else{
-                    System.out.println("[ "+idSemilla+" | "+regado+" | "+diasPlantado+" ]");
+                    System.out.print("[SS]");
 
+                }else{
+                    System.out.print("[ "+idSemilla+" | "+regado+" | "+diasPlantado+" ]");
+
+
+                }
+                if(i%columnas==0){
+                    System.out.println(" ");
 
                 }
 
