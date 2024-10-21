@@ -151,14 +151,7 @@ public class Granja implements Serializable  {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                if(idSemilla==-1){
-                    System.out.println("[SS]");
-                }else{
-                    System.out.println("[ "+idSemilla+" | "+regado+" | "+diasPlantado+" ]");
-
-
-                }
-
+                System.out.println("[ "+idSemilla+" | "+regado+" | "+diasPlantado+" ]");
             }
 
         } catch (Exception e) {

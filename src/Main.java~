@@ -49,10 +49,10 @@ public class Main {
                     granja.plantarEnColumna(col);
                     break;
                 case 4:
-                    granja.venderFruta();
+                    //granja.venderFruta();
                     break;
                 case 5:
-                    granja.mostrarHuerto();
+                    granja.mostrarInfo();
                     break;
                 case 6:
                     Granja.guardarPartida(granja);

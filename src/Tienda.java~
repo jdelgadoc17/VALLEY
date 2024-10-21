@@ -11,7 +11,7 @@ public class Tienda implements Serializable {
     public Tienda() {
         mapa_total_semillas = new TreeMap<>();
         semillasSegunEstacion = new TreeMap<>();
-        mapa_total_semillas = FileWork.cargarSemillas("Resources/semillas.xml");
+        mapa_total_semillas = FileWork.cargarSemillas("VALLEY/Resources/semillas.xml");
     }
 
     public void generarSemillasDisponibles(TipoEstacion estacion, double presupuesto) {
