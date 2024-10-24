@@ -10,14 +10,24 @@ public class Almacen  implements Serializable {
         this.mapaFrutoSemilla = new TreeMap<>();
     }
 
+    /*
+     * Añade una cosecha a la almacenamiento, si la semilla ya existe, suma la cantidad al ya existente.
+     */
+
     public void annadirCosecha(Semilla semilla, int cantidad) {
         if (mapaFrutoSemilla.containsKey(semilla)) {
+
             int cantidadExistente = mapaFrutoSemilla.get(semilla);
+
             mapaFrutoSemilla.put(semilla, cantidadExistente + cantidad);
         } else {
             mapaFrutoSemilla.put(semilla, cantidad);
         }
     }
+
+    /*
+     * Devuelve el total de frutos almacenados en la almacenamiento.
+     */
 
     public int getTotalFruto() {
         int totalFrutos = 0;
@@ -25,14 +35,17 @@ public class Almacen  implements Serializable {
         for (Map.Entry<Semilla, Integer> entrada : mapaFrutoSemilla.entrySet()) {
             totalFrutos += entrada.getValue();
         }
-
         return totalFrutos;
     }
+
+
+    /*
+     * Vende todos los frutos almacenados en la almacenamiento y limpia el mapa de frutos.
+     */
 
     public void venderFrutos() {
         long gananciaTotal = 0;
 
-        // Recorremos el mapa para calcular la ganancia
         for (Map.Entry<Semilla, Integer> entrada : mapaFrutoSemilla.entrySet()) {
             Semilla semilla = entrada.getKey();
             int cantidadFrutos = entrada.getValue();

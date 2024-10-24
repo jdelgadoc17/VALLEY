@@ -79,15 +79,11 @@ public class Main {
 
         if (opcion == 1) {
             System.out.println("Usando configuración por defecto...");
-            if(Files.exists(Path.of("Resources/personal_config.properties"))){
-                Files.delete(Path.of("Resources/personal_config.properties"));
-            }
+            Files.delete(Path.of("Resources/personal_config.properties"));
             FileWork.cargarPropertiesDefault();
         } else if (opcion == 2) {
             System.out.println("Personalizando configuración...");
-            if(Files.exists(Path.of("Resources/default_config.properties"))){
-                Files.delete(Path.of("Resources/default_config.properties"));
-            }
+            Files.delete(Path.of("Resources/default_config.properties"));
             FileWork.configurarProperties();
         } else {
             System.out.println("Opción incorrecta. Volviendo al menú de inicio.");

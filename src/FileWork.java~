@@ -21,10 +21,8 @@ public class FileWork implements Serializable {
 
 
 
-    // Instancia única (Singleton)
     protected static FileWork instanciaUnica;
 
-    // Constructor privado para evitar la creación de múltiples instancias
     private FileWork() {
     }
 
@@ -37,6 +35,38 @@ public class FileWork implements Serializable {
         }
         return instanciaUnica;
     }
+
+    public static Properties getProperties() {
+        Properties properties = new Properties();
+
+        try {
+            if (Files.exists(Paths.get("Resources/default_config.properties"))) {
+                try (FileInputStream input = new FileInputStream("Resources/default_config.properties")) {
+                    properties.load(input);
+                    System.out.println("Configuración por defecto cargada.");
+                }
+            } else if (Files.exists(Paths.get("Resources/personal_config.properties"))) {
+                try (FileInputStream input = new FileInputStream("Resources/personal_config.properties")) {
+                    properties.load(input);
+                    System.out.println("Configuración personalizada cargada.");
+                }
+            } else {
+                System.out.println("No se encontraron archivos de configuración.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error al cargar propiedades: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return properties;
+    }
+
+
+
+
+    /*
+     * Carga las propiedades del archivo de propiedades del xml
+     */
 
     public static TreeMap<Integer, Semilla> cargarSemillas(String xml) {
 
@@ -78,7 +108,7 @@ public class FileWork implements Serializable {
                     int maxFrutos = Integer.parseInt(elemento.getElementsByTagName("maxFrutos").item(0).getTextContent());
 
                     // CREAMOS LA SEMILLA CON MÚLTIPLES ESTACIONES
-                    Semilla semilla = new Semilla(nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
+                    Semilla semilla = new Semilla(id, nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
 
                     // AÑADIMOS LA SEMILLA A LA LISTA
 
@@ -107,14 +137,32 @@ public class FileWork implements Serializable {
 
     public static int pedFilas() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el número de filas:");
-        return sc.nextInt();
+        int filas;
+
+        do {
+            System.out.println("Introduce el número de filas (debe ser mayor que 0):");
+            filas = sc.nextInt();
+            if (filas <= 0) {
+                System.out.println("Error: el número de filas no puede ser 0 o negativo.");
+            }
+        } while (filas <= 0);
+        return filas;
     }
+
     public static int pedColumnas() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el número de columnas:");
-        return sc.nextInt();
+        int columnas;
+        do {
+            System.out.println("Introduce el número de columnas (debe ser mayor que 0):");
+            columnas = sc.nextInt();
+            if (columnas <= 0) {
+                System.out.println("Error: el número de columnas no puede ser 0 o negativo.");
+            }
+        } while (columnas <= 0);
+
+        return columnas;
     }
+
 
     public static int pedPresupuesto() {
         Scanner sc = new Scanner(System.in);
@@ -124,9 +172,38 @@ public class FileWork implements Serializable {
 
     public static String pedEstacion() {
         Scanner sc = new Scanner(System.in);
+
         System.out.println("Introduce la estación inicial:");
-        return sc.nextLine();
+        System.out.println("1. Primavera");
+        System.out.println("2. Verano");
+        System.out.println("3. Otoño");
+        System.out.println("4. Invierno");
+
+        int opcion = sc.nextInt();
+        String estacionSeleccionada = "";
+
+        switch (opcion) {
+            case 1:
+                estacionSeleccionada = "Primavera";
+                break;
+            case 2:
+                estacionSeleccionada = "Verano";
+                break;
+            case 3:
+                estacionSeleccionada = "Otoño";
+                break;
+            case 4:
+                estacionSeleccionada = "Invierno";
+                break;
+            default:
+                System.out.println("Opción no válida. Se seleccionará Primavera por defecto.");
+                estacionSeleccionada = "Primavera";
+                break;
+        }
+
+        return estacionSeleccionada;
     }
+
 
     public static int pedDiasEstacion() {
         Scanner sc = new Scanner(System.in);
@@ -134,6 +211,9 @@ public class FileWork implements Serializable {
         return sc.nextInt();
     }
 
+    /*
+     * Carga las propiedades  ya existentes por defecto
+     */
     public static void cargarPropertiesDefault() {
         Properties properties = new Properties(); //SACAR LOS DATOS DEL ARCHIVO QUE YA EXISTE
 
@@ -161,14 +241,16 @@ public class FileWork implements Serializable {
 
 
 
-
+    /*
+     * Configurar las propiedades personalizadas
+     */
     public static void configurarProperties() {
         System.out.println("Vamos a añadir una nueva configuración");
 
         int numFilas = pedFilas();
         int numColumnas = pedColumnas();
         int presupuestoInicial = pedPresupuesto();
-        String estacionInicial = pedEstacion();
+        String estacionInicial = pedEstacion().toUpperCase();
         int diasDuracionEstacion = pedDiasEstacion();
 
         Properties properties = new Properties();
@@ -191,17 +273,33 @@ public class FileWork implements Serializable {
     }
 
 
-
+    /*
+     * Carga las propiedades desde el archivo de configuración
+     */
+    
     public Properties cargarProperties() {
         Properties properties = new Properties();
+
         try (FileInputStream input = new FileInputStream("Resources/default_config.properties")) {
             properties.load(input);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("No se pudo cargar el archivo de configuración por defecto: " + e.getMessage());
         }
+
+        try (FileInputStream input = new FileInputStream("Resources/personal_config.properties")) {
+            properties.load(input);
+        } catch (IOException e) {
+            System.out.println("No se pudo cargar el archivo de configuración personalizado: " + e.getMessage());
+        }
+
         return properties;
     }
 
+
+
+    /*
+     * Borra los archivos de inicio de la partida (stardam_valley.bin, huerto.dat, default_config.properties y personal_config.properties)
+     */
 
     public static void borrarFilesIniciales() {
         Path path1 = Paths.get("VALLEY/Resources/stardam_valley.bin");

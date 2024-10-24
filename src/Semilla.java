@@ -1,7 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Semilla  implements Serializable {
+public class Semilla  implements Serializable, Comparable<Semilla> {
 
     private int id;
     private String nombre;
@@ -90,5 +90,24 @@ public class Semilla  implements Serializable {
                 ", precioVentaFruto=" + precioVentaFruto +
                 ", maxFrutos=" + maxFrutos +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Semilla semilla = (Semilla) obj;
+        return id == semilla.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+
+    @Override
+    public int compareTo(Semilla otraSemilla) {
+        return Integer.compare(this.id, otraSemilla.id);
     }
 }

@@ -22,7 +22,7 @@ public class Granja implements Serializable  {
         this.presupuesto = presupuesto;
         this.tienda = tienda;
         this.almacen = almacen;
-        this.propiedades = FileWork.getInstancia().cargarProperties();  // Cargar las propiedades una vez
+        //this.propiedades = FileWork.getInstancia().cargarProperties();  // Cargar las propiedades una vez
     }
 
     public void mostrarInfo() {
@@ -34,6 +34,10 @@ public class Granja implements Serializable  {
         System.out.println("- Frutos en almacen: " + almacen.getTotalFruto());
     }
 
+
+    /*
+     * Metodo para crear un huerto con la cantidad de filas y columnas especificadas en las propiedades.
+     */
     public void crearHuerto(Path path) throws IOException {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -50,6 +54,9 @@ public class Granja implements Serializable  {
         }
     }
 
+    /*
+     * Plantar una semilla en una columna concreta
+     */
     public void plantarEnColumna(int columnaSeleccionada) {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -133,15 +140,17 @@ public class Granja implements Serializable  {
         }
     }
 
-    public void mostrarHuerto(){
+    /*
+     * Mostrar el estado del huerto
+     */
+    public void mostrarHuerto() {
         Path path = Paths.get("Resources/archivoHuerto.dat");
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
 
-
-        try{
-
+        try {
             RandomAccessFile archivoHuerto = new RandomAccessFile(path.toFile(), "rw");
+
             for (int i = 0; i < filas * columnas; i++) {
                 long posicion = i * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
@@ -150,28 +159,26 @@ public class Granja implements Serializable  {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                if(idSemilla==-1){
-                    System.out.print("[SS]");
-
-                }else{
-                    System.out.print("[ "+idSemilla+" | "+regado+" | "+diasPlantado+" ]");
-
-
-                }
-                if(i%columnas==0){
-                    System.out.println(" ");
-
+                // Mostrar el estado del huerto
+                if (idSemilla == -1) {
+                    System.out.print("[SS]");  // Celda vacía
+                } else {
+                    System.out.print("[ " + idSemilla + " | " + regado + " | " + diasPlantado + " ]");
                 }
 
+                if ((i + 1) % columnas == 0) {
+                    System.out.println();
+                }
             }
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
     }
 
 
+    /*
+     * Actualizar el estado de los cultivos
+     */
     public void actualizarCultivos() {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -201,9 +208,17 @@ public class Granja implements Serializable  {
         }
     }
 
+
+    /*
+     * Obtener una semilla segun el id
+     */
     public Semilla obtenerSemilla(int idSemilla) {
         return tienda.getMapa_total_semillas().get(idSemilla);  // Buscar la semilla por su id en el TreeMap
     }
+
+    /*
+     * Guardar la partida
+     */
 
     public static void guardarPartida(Granja granja){
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Resources/partida.bin"))) {
@@ -212,11 +227,13 @@ public class Granja implements Serializable  {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
 
+
+    /*
+     * Atender cultivos y recolectar frutos
+     */
     public void atenderCultivos(Path path) {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -256,7 +273,9 @@ public class Granja implements Serializable  {
         }
     }
 
-    // Metodo para restablecer los cultivos
+    /*
+     * Reestablecer el estado de los cultivos
+     */
     public void reestablecerCultivos() {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -277,10 +296,17 @@ public class Granja implements Serializable  {
         }
     }
 
+    /*
+     * Vender frutos
+     */
     public void venderFruta() {
         almacen.venderFrutos();  // Llamar al método de Almacen
     }
 
+
+    /*
+     * Cambiar la estación
+     */
     public void cambiarEstacion() {
         switch (tipoEstacion) {
             case PRIMAVERA:
@@ -300,6 +326,10 @@ public class Granja implements Serializable  {
         reestablecerCultivos();
     }
 
+
+    /*
+     * Actualizar los cultivos según el día actual
+     */
     public void iniciarNuevoDia() {
         diaActual++;
 
