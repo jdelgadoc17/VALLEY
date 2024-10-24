@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class Main {
 
-
     public static int pedOpc() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Elige una opción:");
@@ -79,15 +78,9 @@ public class Main {
 
         if (opcion == 1) {
             System.out.println("Usando configuración por defecto...");
-            if(Files.exists(Path.of("Resources/personal_config.properties"))){
-                Files.delete(Path.of("Resources/personal_config.properties"));
-            }
             FileWork.cargarPropertiesDefault();
         } else if (opcion == 2) {
             System.out.println("Personalizando configuración...");
-            if(Files.exists(Path.of("Resources/default_config.properties"))){
-                Files.delete(Path.of("Resources/default_config.properties"));
-            }
             FileWork.configurarProperties();
         } else {
             System.out.println("Opción incorrecta. Volviendo al menú de inicio.");
@@ -101,34 +94,28 @@ public class Main {
 
 
     public static void menuInicio() throws IOException {
+        System.out.println("BIENVENIDO A STARDEW VALLEY");
+        System.out.println("--------------------------------");
+        System.out.println("1. NUEVA PARTIDA");
+        System.out.println("2. CARGAR PARTIDA");
 
-
-        int opc;
-
-        do {
-            System.out.println("BIENVENIDO A STARDEW VALLEY");
-            System.out.println("--------------------------------");
-            System.out.println("1. NUEVA PARTIDA");
-            System.out.println("2. CARGAR PARTIDA");
-            opc = pedOpc();
-            switch (opc) {
-                case 1:
+        switch (pedOpc()) {
+            case 1:
+                nuevaPartida();
+                break;
+            case 2:
+                Path path = Paths.get("Resources/archivoHuerto.dat");
+                if (Files.exists(path)) {
+                    cargarPartida();
+                } else {
+                    System.out.println("No se encontró ninguna partida guardada.");
                     nuevaPartida();
-                    break;
-                case 2:
-                    Path path = Paths.get("Resources/archivoHuerto.dat");
-                    if (Files.exists(path)) {
-                        cargarPartida();
-                    } else {
-                        System.out.println("No se encontró ninguna partida guardada.");
-                        nuevaPartida();
-                    }
-                    break;
-                default:
-                    System.out.println("Opción incorrecta. Por favor elige una opción válida.");
-
-            }
-        } while (opc != 1 && opc != 2);
+                }
+                break;
+            default:
+                System.out.println("Opción incorrecta. Por favor elige una opción válida.");
+                break;
+        }
     }
 
 
@@ -139,7 +126,7 @@ public class Main {
 
         elegirPropiedades();
         FileWork fileWork = FileWork.getInstancia();
-        Properties properties = fileWork.getProperties();
+        Properties properties = fileWork.cargarProperties();
         int diaActual = 1;
         TipoEstacion tipoEstacion = TipoEstacion.valueOf(properties.getProperty("estacionInicial").toUpperCase());
         double presupuesto = Double.parseDouble(properties.getProperty("presupuestoInicial"));
