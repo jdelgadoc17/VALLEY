@@ -22,7 +22,7 @@ public class Granja implements Serializable  {
         this.presupuesto = presupuesto;
         this.tienda = tienda;
         this.almacen = almacen;
-        //this.propiedades = FileWork.getInstancia().cargarProperties();  // Cargar las propiedades una vez de ELEGIR AQUI?
+        //this.propiedades = FileWork.getInstancia().cargarProperties();  // Cargar las propiedades una vez
     }
 
     public void mostrarInfo() {
