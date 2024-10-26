@@ -14,6 +14,11 @@ public class Granja implements Serializable {
     private static final String ESTACION_KEY = "estacionInicial";
     private static final String PRESUPUESTO_KEY = "presupuestoInicial";
     private static final String DIAS_DURACION_ESTACION_KEY = "diasDuracionEstacion";
+    private static final String HUERTO_FILE_PATH = "Resources/archivoHuerto.dat";
+    private static final String PARTIDA_FILE_PATH = "Resources/partida.bin";
+    private static final int ID_SEMILLA_VACIA = -1;
+    private static final boolean REGADO_DEFAULT = false;
+    private static final int DIAS_PLANTADO_DEFAULT = 0;
 
     private int diaActual;
     private TipoEstacion tipoEstacion;
@@ -51,11 +56,11 @@ public class Granja implements Serializable {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
 
-        try (RandomAccessFile archivoHuerto = new RandomAccessFile("Resources/archivoHuerto.dat", "rw")) {
+        try (RandomAccessFile archivoHuerto = new RandomAccessFile(HUERTO_FILE_PATH, "rw")) {
             for (int i = 0; i < filas * columnas; i++) {
-                archivoHuerto.writeInt(-1);
-                archivoHuerto.writeBoolean(false);
-                archivoHuerto.writeInt(-1);
+                archivoHuerto.writeInt(ID_SEMILLA_VACIA);
+                archivoHuerto.writeBoolean(REGADO_DEFAULT);
+                archivoHuerto.writeInt(DIAS_PLANTADO_DEFAULT);
             }
 
             System.out.println("Huerto inicializado con " + filas + " filas y " + columnas + " columnas.");
@@ -72,14 +77,14 @@ public class Granja implements Serializable {
             return;
         }
 
-        try (RandomAccessFile archivoHuerto = new RandomAccessFile("Resources/archivoHuerto.dat", "rw")) {
+        try (RandomAccessFile archivoHuerto = new RandomAccessFile(HUERTO_FILE_PATH, "rw")) {
             boolean columnaVacia = true;
 
             for (int fila = 0; fila < filas; fila++) {
                 long posicion = (fila * columnas + columnaSeleccionada) * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
                 int idSemilla = archivoHuerto.readInt();
-                if (idSemilla != -1) {
+                if (idSemilla != ID_SEMILLA_VACIA) {
                     columnaVacia = false;
                     return;
                 }
@@ -133,7 +138,7 @@ public class Granja implements Serializable {
                 long posicion = (fila * columnas + columnaSeleccionada) * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
                 archivoHuerto.writeInt(idSemillaSeleccionada);
-                archivoHuerto.writeBoolean(false);
+                archivoHuerto.writeBoolean(REGADO_DEFAULT);
                 archivoHuerto.writeInt(0);
             }
 
@@ -145,7 +150,7 @@ public class Granja implements Serializable {
     }
 
     public void mostrarHuerto() {
-        Path path = Paths.get("Resources/archivoHuerto.dat");
+        Path path = Paths.get(HUERTO_FILE_PATH);
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
         int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
@@ -160,7 +165,7 @@ public class Granja implements Serializable {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                if (idSemilla == -1) {
+                if (idSemilla == ID_SEMILLA_VACIA) {
                     System.out.print("[SS]");
                 } else {
                     System.out.print("[ " + idSemilla + " | " + regado + " | " + diasPlantado + " ]");
@@ -179,7 +184,7 @@ public class Granja implements Serializable {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
         int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
-        try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get("Resources/archivoHuerto.dat").toFile(), "rw")) {
+        try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get(HUERTO_FILE_PATH).toFile(), "rw")) {
             archivoHuerto.seek(0);
 
             for (int i = 0; i < filas * columnas; i++) {
@@ -190,12 +195,12 @@ public class Granja implements Serializable {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                if (idSemilla != -1 && regado) {
+                if (idSemilla != ID_SEMILLA_VACIA && regado) {
                     diasPlantado++;
                     archivoHuerto.seek(posicion + 5);
                     archivoHuerto.writeInt(diasPlantado);
                     archivoHuerto.seek(posicion + 4);
-                    archivoHuerto.writeBoolean(false);
+                    archivoHuerto.writeBoolean(REGADO_DEFAULT);
                 }
             }
             System.out.println("CULTIVOS ACTUALIZADOS");
@@ -209,7 +214,7 @@ public class Granja implements Serializable {
     }
 
     public static void guardarPartida(Granja granja) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Resources/partida.bin"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(PARTIDA_FILE_PATH))) {
             oos.writeObject(granja);
             System.out.println("Partida guardada correctamente.");
         } catch (IOException e) {
@@ -232,7 +237,7 @@ public class Granja implements Serializable {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                if (idSemilla != -1) {
+                if (idSemilla != ID_SEMILLA_VACIA) {
                     if (!regado) {
                         archivoHuerto.seek(posicion + 4);
                         archivoHuerto.writeBoolean(true);
@@ -245,9 +250,9 @@ public class Granja implements Serializable {
                         System.out.println("Se han añadido " + frutosRecolectados + " frutos de " + semilla.getNombre());
 
                         archivoHuerto.seek(posicion);
-                        archivoHuerto.writeInt(-1);
-                        archivoHuerto.writeBoolean(false);
-                        archivoHuerto.writeInt(-1);
+                        archivoHuerto.writeInt(ID_SEMILLA_VACIA);
+                        archivoHuerto.writeBoolean(REGADO_DEFAULT);
+                        archivoHuerto.writeInt(DIAS_PLANTADO_DEFAULT);
                     }
                 }
             }
@@ -260,15 +265,15 @@ public class Granja implements Serializable {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
         int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
-        try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get("Resources/archivoHuerto.dat").toFile(), "rw")) {
+        try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get(HUERTO_FILE_PATH).toFile(), "rw")) {
             archivoHuerto.seek(0);
 
             for (int i = 0; i < filas * columnas; i++) {
                 long posicion = i * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
-                archivoHuerto.writeInt(-1);
+                archivoHuerto.writeInt(ID_SEMILLA_VACIA);
                 archivoHuerto.writeBoolean(false);
-                archivoHuerto.writeInt(-1);
+                archivoHuerto.writeInt(DIAS_PLANTADO_DEFAULT);
             }
             System.out.println("CULTIVOS REESTABLECIDOS");
         } catch (IOException e) {
