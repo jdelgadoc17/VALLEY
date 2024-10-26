@@ -19,16 +19,11 @@ import java.util.TreeMap;
 
 public class FileWork implements Serializable {
 
+    private static FileWork instanciaUnica;
 
+    // Constructor privado para el Singleton
+    private FileWork() {}
 
-    protected static FileWork instanciaUnica;
-
-    private FileWork() {
-    }
-
-    /**
-     * Obtiene la instancia unica (Singleton)
-     */
     public static FileWork getInstancia() {
         if (instanciaUnica == null) {
             instanciaUnica = new FileWork();
@@ -36,69 +31,60 @@ public class FileWork implements Serializable {
         return instanciaUnica;
     }
 
-    public static Properties getProperties() {
+    // Método para obtener propiedades del archivo especificado
+    public Properties cargarProperties(String tipoConfig) {
         Properties properties = new Properties();
+        String archivoConfig = tipoConfig.equals("default") ? "Resources/default_config.properties" : "Resources/personal_config.properties";
 
-        try {
-            if (Files.exists(Paths.get("Resources/default_config.properties"))) {
-                try (FileInputStream input = new FileInputStream("Resources/default_config.properties")) {
-                    properties.load(input);
-                    System.out.println("Configuración por defecto cargada.");
-                }
-            } else if (Files.exists(Paths.get("Resources/personal_config.properties"))) {
-                try (FileInputStream input = new FileInputStream("Resources/personal_config.properties")) {
-                    properties.load(input);
-                    System.out.println("Configuración personalizada cargada.");
-                }
-            } else {
-                System.out.println("No se encontraron archivos de configuración.");
-            }
+        try (FileInputStream input = new FileInputStream(archivoConfig)) {
+            properties.load(input);
+            System.out.println("Configuración " + tipoConfig + " cargada.");
         } catch (IOException e) {
-            System.out.println("Error al cargar propiedades: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("No se pudo cargar el archivo de configuración " + tipoConfig + ": " + e.getMessage());
         }
 
         return properties;
     }
 
+    public static void configurarProperties() {
+        Properties properties = new Properties();
 
+        int filas = pedFilas();
+        int columnas = pedColumnas();
+        int presupuestoInicial = pedirPresupuesto();
+        String estacionInicial = pedirEstacion();
+        int diasDuracionEstacion = pedirDiasEstacion();
 
+        properties.setProperty("numFilas", String.valueOf(filas));
+        properties.setProperty("numColumnas", String.valueOf(columnas));
+        properties.setProperty("presupuestoInicial", String.valueOf(presupuestoInicial));
+        properties.setProperty("estacionInicial", estacionInicial);
+        properties.setProperty("diasDuracionEstacion", String.valueOf(diasDuracionEstacion));
 
-    /*
-     * Carga las propiedades del archivo de propiedades del xml
-     */
+        guardarProperties(properties, "personalizado");
+    }
 
+    // Cargar semillas desde archivo XML
     public static TreeMap<Integer, Semilla> cargarSemillas(String xml) {
-
         TreeMap<Integer, Semilla> semillas = new TreeMap<>();
-
-        // CARGAMOS LAS SEMILLAS DEL XML EN UNA LISTA A DEVOLVER
         try {
-            // PREPARAMOS EL XML
             File archivo = new File(xml);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(archivo);
 
-
-            // SE OBTIENEN TODOS LOS NODOS SEMILLA DEL XML
             NodeList listaSemillas = doc.getElementsByTagName("semilla");
-
             for (int i = 0; i < listaSemillas.getLength(); i++) {
-                Node nodoSemilla = listaSemillas.item(i); // CREAMOS UN NODO EN CADA ''OBJETO'' SEMILLA DEL XML
-
+                Node nodoSemilla = listaSemillas.item(i);
                 if (nodoSemilla.getNodeType() == Node.ELEMENT_NODE) {
-                    Element elemento = (Element) nodoSemilla; // CREAMOS UN ELEMENTO DE CADA SEMILLA SEGÚN EL TIPO DE VALOR
+                    Element elemento = (Element) nodoSemilla;
                     int id = Integer.parseInt(elemento.getAttribute("id"));
-
                     String nombre = elemento.getElementsByTagName("nombre").item(0).getTextContent();
 
-                    // Procesar el atributo estacion para manejar múltiples estaciones
+                    // Procesar estaciones
                     String estacionesStr = elemento.getElementsByTagName("estacion").item(0).getTextContent();
-                    String[] estacionesArray = estacionesStr.split("-"); // Separar estaciones usando "-"
                     ArrayList<TipoEstacion> estaciones = new ArrayList<>();
-
-                    for (String estacion : estacionesArray) {
+                    for (String estacion : estacionesStr.split("-")) {
                         estaciones.add(TipoEstacion.valueOf(estacion.trim().toUpperCase()));
                     }
 
@@ -107,225 +93,93 @@ public class FileWork implements Serializable {
                     double precioVentaFruto = Double.parseDouble(elemento.getElementsByTagName("precioVentaFruto").item(0).getTextContent());
                     int maxFrutos = Integer.parseInt(elemento.getElementsByTagName("maxFrutos").item(0).getTextContent());
 
-                    // CREAMOS LA SEMILLA CON MÚLTIPLES ESTACIONES
                     Semilla semilla = new Semilla(id, nombre, estaciones, diasCrecimiento, precioCompraSemilla, precioVentaFruto, maxFrutos);
-
-                    // AÑADIMOS LA SEMILLA A LA LISTA
-
                     semillas.put(id, semilla);
                 }
             }
-            System.out.println("SEMILLAS CARGADAS CON EXITO");
-
-        } catch (ParserConfigurationException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (SAXException e) {
-            System.out.println("Error: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("Semillas cargadas con éxito desde XML.");
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            System.out.println("Error al cargar semillas: " + e.getMessage());
         }
 
         return semillas;
     }
 
+    // Guardar propiedades por defecto o personalizadas
+    public static void guardarProperties(Properties properties, String tipoConfig) {
+        String archivoConfig = tipoConfig.equals("default") ? "Resources/default_config.properties" : "Resources/personal_config.properties";
 
+        File directory = new File("Resources");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
 
+        try (FileOutputStream output = new FileOutputStream(archivoConfig)) {
+            properties.store(output, "Configuración " + tipoConfig + " del juego");
+            System.out.println("Configuración " + tipoConfig + " guardada exitosamente en " + archivoConfig);
+        } catch (IOException e) {
+            System.out.println("Error al guardar configuración " + tipoConfig + ": " + e.getMessage());
+        }
+    }
 
-
-
-
-
+    // Métodos auxiliares de entrada
     public static int pedFilas() {
-        Scanner sc = new Scanner(System.in);
-        int filas;
-
-        do {
-            System.out.println("Introduce el número de filas (debe ser mayor que 0):");
-            filas = sc.nextInt();
-            if (filas <= 0) {
-                System.out.println("Error: el número de filas no puede ser 0 o negativo.");
-            }
-        } while (filas <= 0);
-        return filas;
+        return pedirNumero("Introduce el número de filas (debe ser mayor que 0):");
     }
 
     public static int pedColumnas() {
+        return pedirNumero("Introduce el número de columnas (debe ser mayor que 0):");
+    }
+
+    public static int pedirNumero(String mensaje) {
         Scanner sc = new Scanner(System.in);
-        int columnas;
+        int numero;
         do {
-            System.out.println("Introduce el número de columnas (debe ser mayor que 0):");
-            columnas = sc.nextInt();
-            if (columnas <= 0) {
-                System.out.println("Error: el número de columnas no puede ser 0 o negativo.");
+            System.out.println(mensaje);
+            numero = sc.nextInt();
+            if (numero <= 0) {
+                System.out.println("Error: el número debe ser mayor que 0.");
             }
-        } while (columnas <= 0);
-
-        return columnas;
+        } while (numero <= 0);
+        return numero;
     }
 
-
-    public static int pedPresupuesto() {
+    public static String pedirEstacion() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el presupuesto inicial:");
-        return sc.nextInt();
-    }
-
-    public static String pedEstacion() {
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Introduce la estación inicial:");
-        System.out.println("1. Primavera");
-        System.out.println("2. Verano");
-        System.out.println("3. Otoño");
-        System.out.println("4. Invierno");
-
-        int opcion = sc.nextInt();
-        String estacionSeleccionada = "";
-
-        switch (opcion) {
-            case 1:
-                estacionSeleccionada = "Primavera";
-                break;
-            case 2:
-                estacionSeleccionada = "Verano";
-                break;
-            case 3:
-                estacionSeleccionada = "Otoño";
-                break;
-            case 4:
-                estacionSeleccionada = "Invierno";
-                break;
-            default:
-                System.out.println("Opción no válida. Se seleccionará Primavera por defecto.");
-                estacionSeleccionada = "Primavera";
-                break;
-        }
-
-        return estacionSeleccionada;
-    }
-
-
-    public static int pedDiasEstacion() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce los días de la estación:");
-        return sc.nextInt();
-    }
-
-    /*
-     * Carga las propiedades  ya existentes por defecto
-     */
-    public static void cargarPropertiesDefault() {
-        Properties properties = new Properties(); //SACAR LOS DATOS DEL ARCHIVO QUE YA EXISTE
-
-        properties.setProperty("numFilas", "4");  // Configuración por defecto
-        properties.setProperty("numColumnas", "4");
-        properties.setProperty("presupuestoInicial", "1000");
-        properties.setProperty("estacionInicial", "primavera");
-        properties.setProperty("diasDuracionEstacion", "30");
-
-        // Crear el directorio si no existe
-        File directory = new File("Resources");
-        if (!directory.exists()) {
-            directory.mkdirs();  // Crear directorios intermedios si no existen
-
-        }
-
-        try (FileOutputStream output = new FileOutputStream("Resources/default_config.properties")) {
-            properties.store(output, "Configuración por defecto del juego");
-            System.out.println("Configuración por defecto guardada exitosamente en 'default_config.properties'.");
-        } catch (IOException e) {
-            System.out.println("Error al guardar el archivo de configuración: " + e.getMessage());
-            e.printStackTrace();
+        System.out.println("Introduce la estación inicial:\n1. Primavera\n2. Verano\n3. Otoño\n4. Invierno");
+        switch (sc.nextInt()) {
+            case 1: return "PRIMAVERA";
+            case 2: return "VERANO";
+            case 3: return "OTOÑO";
+            case 4: return "INVIERNO";
+            default: System.out.println("Selección no válida. Se seleccionará Primavera por defecto."); return "PRIMAVERA";
         }
     }
 
-
-
-    /*
-     * Configurar las propiedades personalizadas
-     */
-    public static void configurarProperties() {
-        System.out.println("Vamos a añadir una nueva configuración");
-
-        int numFilas = pedFilas();
-        int numColumnas = pedColumnas();
-        int presupuestoInicial = pedPresupuesto();
-        String estacionInicial = pedEstacion().toUpperCase();
-        int diasDuracionEstacion = pedDiasEstacion();
-
-        Properties properties = new Properties();
-        properties.setProperty("numFilas", String.valueOf(numFilas));
-        properties.setProperty("numColumnas", String.valueOf(numColumnas));
-        properties.setProperty("presupuestoInicial", String.valueOf(presupuestoInicial));
-        properties.setProperty("estacionInicial", estacionInicial);
-        properties.setProperty("diasDuracionEstacion", String.valueOf(diasDuracionEstacion));
-
-        File directory = new File("Resources");
-        if (!directory.exists()) {
-            directory.mkdir();  // Crear la carpeta si no existe
-        }
-        try (FileOutputStream output = new FileOutputStream("Resources/personal_config.properties")) {
-            properties.store(output, "Configuración del Juego");
-            System.out.println("Configuración personalizada guardada exitosamente en 'personal_config.properties'.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static int pedirPresupuesto() {
+        return pedirNumero("Introduce el presupuesto inicial:");
     }
 
-
-    /*
-     * Carga las propiedades desde el archivo de configuración
-     */
-
-    public Properties cargarProperties() {
-        Properties properties = new Properties();
-
-        try (FileInputStream input = new FileInputStream("Resources/default_config.properties")) {
-            properties.load(input);
-        } catch (IOException e) {
-            System.out.println("No se pudo cargar el archivo de configuración por defecto: " + e.getMessage());
-        }
-
-        try (FileInputStream input = new FileInputStream("Resources/personal_config.properties")) {
-            properties.load(input);
-        } catch (IOException e) {
-            System.out.println("No se pudo cargar el archivo de configuración personalizado: " + e.getMessage());
-        }
-
-        return properties;
+    public static int pedirDiasEstacion() {
+        return pedirNumero("Introduce los días de la estación:");
     }
 
+    // Método para borrar archivos iniciales
+    public static void borrarArchivosIniciales() {
+        String[] archivos = {
+                "Resources/partida.bin",
+                "Resources/huerto.dat",
+                "Resources/default_config.properties",
+                "Resources/personal_config.properties"
+        };
 
-
-    /*
-     * Borra los archivos de inicio de la partida (stardam_valley.bin, huerto.dat, default_config.properties y personal_config.properties)
-     */
-
-    public static void borrarFilesIniciales() {
-        Path path1 = Paths.get("VALLEY/Resources/stardam_valley.bin");
-        Path path2 = Paths.get("VALLEY/Resources/huerto.dat");
-        Path path3 = Paths.get("VALLEY/Resources/default_config.properties");
-        Path path4 = Paths.get("VALLEY/Resources/personal_config.properties");
-
-
-        try {
-            if (Files.exists(path1)) {
-                Files.delete(path1);
+        for (String archivo : archivos) {
+            try {
+                Path path = Paths.get(archivo);
+                if (Files.exists(path)) Files.delete(path);
+            } catch (IOException e) {
+                System.out.println("No se pudo borrar " + archivo + ": " + e.getMessage());
             }
-            if (Files.exists(path2)) {
-                Files.delete(path2);
-            }
-            if (Files.exists(path3)) {
-                Files.delete(path3);
-            }
-            if (Files.exists(path4)) {
-                Files.delete(path4);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
-
-
-
 }

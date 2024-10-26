@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -6,23 +7,35 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-public class Granja implements Serializable  {
+public class Granja implements Serializable {
     private static final int TAMANNO_CELDA = Integer.BYTES + 1 + Integer.BYTES;
+    private static final String FILAS_KEY = "numFilas";
+    private static final String COLUMNAS_KEY = "numColumnas";
+    private static final String ESTACION_KEY = "estacionInicial";
+    private static final String PRESUPUESTO_KEY = "presupuestoInicial";
+    private static final String DIAS_DURACION_ESTACION_KEY = "diasDuracionEstacion";
 
     private int diaActual;
     private TipoEstacion tipoEstacion;
     private double presupuesto;
     private Tienda tienda;
     private Almacen almacen;
-    private Properties propiedades;  // Cargar las propiedades una sola vez
+    private Properties propiedades;
 
-    public Granja(int diaActual, TipoEstacion tipoEstacion, double presupuesto, Tienda tienda, Almacen almacen) {
+    public Granja(int diaActual, TipoEstacion tipoEstacion, double presupuesto, Tienda tienda, Almacen almacen, String tipoConfig) {
         this.diaActual = diaActual;
         this.tipoEstacion = tipoEstacion;
         this.presupuesto = presupuesto;
         this.tienda = tienda;
         this.almacen = almacen;
-        //this.propiedades = FileWork.getInstancia().cargarProperties();  // Cargar las propiedades una vez de ELEGIR AQUI?
+
+        // Cargar las propiedades desde FileWork según el tipo de configuración
+        this.propiedades = FileWork.getInstancia().cargarProperties(tipoConfig);
+
+        if (this.propiedades == null) {
+            System.out.println("Error: No se pudo cargar el archivo de configuración. Usando valores por defecto.");
+            this.propiedades = FileWork.getInstancia().cargarProperties("default");
+        }
     }
 
     public void mostrarInfo() {
@@ -30,14 +43,10 @@ public class Granja implements Serializable  {
         System.out.println("- Días de juego: " + diaActual);
         System.out.println("- Dinero disponible: " + presupuesto);
         System.out.println("- Estación: " + tipoEstacion);
-        System.out.println("- Semillas en venta: " + tienda.getSemillasSegunEstacion()); //TODAS O SOLO TRES
+        System.out.println("- Semillas en venta: " + tienda.getSemillasSegunEstacion());
         System.out.println("- Frutos en almacen: " + almacen.getTotalFruto());
     }
 
-
-    /*
-     * Metodo para crear un huerto con la cantidad de filas y columnas especificadas en las propiedades.
-     */
     public void crearHuerto(Path path) throws IOException {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -54,12 +63,9 @@ public class Granja implements Serializable  {
         }
     }
 
-    /*
-     * Plantar una semilla en una columna concreta
-     */
     public void plantarEnColumna(int columnaSeleccionada) {
-        int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
-        int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
+        int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
+        int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
         if (columnaSeleccionada < 0 || columnaSeleccionada >= columnas) {
             System.out.println("Columna no válida.");
@@ -72,9 +78,8 @@ public class Granja implements Serializable  {
             for (int fila = 0; fila < filas; fila++) {
                 long posicion = (fila * columnas + columnaSeleccionada) * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
-
                 int idSemilla = archivoHuerto.readInt();
-                if (idSemilla != -1) {  // Si hay una semilla plantada en alguna fila de la columna
+                if (idSemilla != -1) {
                     columnaVacia = false;
                     return;
                 }
@@ -113,6 +118,7 @@ public class Granja implements Serializable  {
                 }
             }
 
+
             if (idSemillaSeleccionada == null) {
                 System.out.println("Error: No se pudo encontrar el ID de la semilla seleccionada.");
                 return;
@@ -126,27 +132,22 @@ public class Granja implements Serializable  {
             for (int fila = 0; fila < filas; fila++) {
                 long posicion = (fila * columnas + columnaSeleccionada) * TAMANNO_CELDA;
                 archivoHuerto.seek(posicion);
-
                 archivoHuerto.writeInt(idSemillaSeleccionada);
                 archivoHuerto.writeBoolean(false);
                 archivoHuerto.writeInt(0);
             }
 
             presupuesto -= semillaSeleccionada.getPrecioCompraSemilla() * filas;
-
-            System.out.println("Has plantado "+ semillaSeleccionada.getNombre() +" en la columna " + columnaSeleccionada + ".");
+            System.out.println("Has plantado " + semillaSeleccionada.getNombre() + " en la columna " + columnaSeleccionada + ".");
         } catch (IOException e) {
             System.out.println("Error al plantar en la columna: " + e.getMessage());
         }
     }
 
-    /*
-     * Mostrar el estado del huerto
-     */
     public void mostrarHuerto() {
         Path path = Paths.get("Resources/archivoHuerto.dat");
-        int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
-        int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
+        int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
+        int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
         try {
             RandomAccessFile archivoHuerto = new RandomAccessFile(path.toFile(), "rw");
@@ -159,9 +160,8 @@ public class Granja implements Serializable  {
                 boolean regado = archivoHuerto.readBoolean();
                 int diasPlantado = archivoHuerto.readInt();
 
-                // Mostrar el estado del huerto
                 if (idSemilla == -1) {
-                    System.out.print("[SS]");  // Celda vacía
+                    System.out.print("[SS]");
                 } else {
                     System.out.print("[ " + idSemilla + " | " + regado + " | " + diasPlantado + " ]");
                 }
@@ -175,13 +175,9 @@ public class Granja implements Serializable  {
         }
     }
 
-
-    /*
-     * Actualizar el estado de los cultivos
-     */
     public void actualizarCultivos() {
-        int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
-        int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
+        int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
+        int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
         try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get("Resources/archivoHuerto.dat").toFile(), "rw")) {
             archivoHuerto.seek(0);
@@ -208,19 +204,11 @@ public class Granja implements Serializable  {
         }
     }
 
-
-    /*
-     * Obtener una semilla segun el id
-     */
     public Semilla obtenerSemilla(int idSemilla) {
-        return tienda.getMapa_total_semillas().get(idSemilla);  // Buscar la semilla por su id en el TreeMap
+        return tienda.getMapa_total_semillas().get(idSemilla);
     }
 
-    /*
-     * Guardar la partida
-     */
-
-    public static void guardarPartida(Granja granja){
+    public static void guardarPartida(Granja granja) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("Resources/partida.bin"))) {
             oos.writeObject(granja);
             System.out.println("Partida guardada correctamente.");
@@ -229,16 +217,11 @@ public class Granja implements Serializable  {
         }
     }
 
-
-
-    /*
-     * Atender cultivos y recolectar frutos
-     */
     public void atenderCultivos(Path path) {
-        int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
-        int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
+        int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
+        int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
-        try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get("Resources/archivoHuerto.dat").toFile(), "rw")) {
+        try (RandomAccessFile archivoHuerto = new RandomAccessFile(path.toFile(), "rw")) {
             archivoHuerto.seek(0);
 
             for (int i = 0; i < filas * columnas; i++) {
@@ -252,17 +235,17 @@ public class Granja implements Serializable  {
                 if (idSemilla != -1) {
                     if (!regado) {
                         archivoHuerto.seek(posicion + 4);
-                        archivoHuerto.writeBoolean(true);  // Marcar como regado
+                        archivoHuerto.writeBoolean(true);
                     }
 
                     Semilla semilla = obtenerSemilla(idSemilla);
                     if (semilla != null && diasPlantado >= semilla.getDiasCrecimiento()) {
                         int frutosRecolectados = (int) (Math.random() * semilla.getMaxFrutos()) + 1;
                         almacen.annadirCosecha(semilla, frutosRecolectados);
-                        System.out.println("Se han añadido almacen " +frutosRecolectados+ " frutos de " +semilla.getNombre());
+                        System.out.println("Se han añadido " + frutosRecolectados + " frutos de " + semilla.getNombre());
 
                         archivoHuerto.seek(posicion);
-                        archivoHuerto.writeInt(-1);  //PASAR A STATIC
+                        archivoHuerto.writeInt(-1);
                         archivoHuerto.writeBoolean(false);
                         archivoHuerto.writeInt(-1);
                     }
@@ -273,12 +256,9 @@ public class Granja implements Serializable  {
         }
     }
 
-    /*
-     * Reestablecer el estado de los cultivos
-     */
     public void reestablecerCultivos() {
-        int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
-        int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
+        int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
+        int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
 
         try (RandomAccessFile archivoHuerto = new RandomAccessFile(Paths.get("Resources/archivoHuerto.dat").toFile(), "rw")) {
             archivoHuerto.seek(0);
@@ -296,17 +276,10 @@ public class Granja implements Serializable  {
         }
     }
 
-    /*
-     * Vender frutos
-     */
     public void venderFruta() {
-        almacen.venderFrutos();  // Llamar al método de Almacen
+        almacen.venderFrutos();
     }
 
-
-    /*
-     * Cambiar la estación
-     */
     public void cambiarEstacion() {
         switch (tipoEstacion) {
             case PRIMAVERA:
@@ -326,14 +299,10 @@ public class Granja implements Serializable  {
         reestablecerCultivos();
     }
 
-
-    /*
-     * Actualizar los cultivos según el día actual
-     */
     public void iniciarNuevoDia() {
         diaActual++;
 
-        int diasDuracionEstacion = Integer.parseInt(propiedades.getProperty("diasDuracionEstacion"));
+        int diasDuracionEstacion = Integer.parseInt(propiedades.getProperty(DIAS_DURACION_ESTACION_KEY));
         if (diaActual > diasDuracionEstacion) {
             diaActual = 1;
             cambiarEstacion();
@@ -342,7 +311,7 @@ public class Granja implements Serializable  {
             actualizarCultivos();
         }
 
-        tienda.generarSemillasDisponibles(tipoEstacion, presupuesto);  // Generar semillas según la estación actual
+        tienda.generarSemillasDisponibles(tipoEstacion, presupuesto);
     }
 
     public int getDiaActual() {
