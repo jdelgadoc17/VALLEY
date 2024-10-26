@@ -31,7 +31,7 @@ public class FileWork implements Serializable {
         return instanciaUnica;
     }
 
-    // Método para obtener propiedades del archivo especificado
+    // Metodo para obtener propiedades del archivo especificado
     public Properties cargarProperties(String tipoConfig) {
         Properties properties = new Properties();
         String archivoConfig = tipoConfig.equals("default") ? "Resources/default_config.properties" : "Resources/personal_config.properties";
@@ -45,6 +45,10 @@ public class FileWork implements Serializable {
 
         return properties;
     }
+
+    /*
+     * Configurar propiedades en el archivo especificado
+     */
 
     public static void configurarProperties() {
         Properties properties = new Properties();
@@ -108,6 +112,7 @@ public class FileWork implements Serializable {
     // Guardar propiedades por defecto o personalizadas
     public static void guardarProperties(Properties properties, String tipoConfig) {
         String archivoConfig = tipoConfig.equals("default") ? "Resources/default_config.properties" : "Resources/personal_config.properties";
+        //Controlamos el tipo de properties
 
         File directory = new File("Resources");
         if (!directory.exists()) {
@@ -122,7 +127,6 @@ public class FileWork implements Serializable {
         }
     }
 
-    // Métodos auxiliares de entrada
     public static int pedFilas() {
         return pedirNumero("Introduce el número de filas (debe ser mayor que 0):");
     }
@@ -164,7 +168,7 @@ public class FileWork implements Serializable {
         return pedirNumero("Introduce los días de la estación:");
     }
 
-    // Método para borrar archivos iniciales
+    // Metodo para borrar archivos iniciales
     public static void borrarArchivosIniciales() {
         String[] archivos = {
                 "Resources/partida.bin",

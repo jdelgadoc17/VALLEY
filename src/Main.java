@@ -21,6 +21,10 @@ public class Main {
         return sc.nextInt();
     }
 
+    /*
+    Flow del juego
+     */
+
     public static void jugar(Granja granja) {
         boolean jugando = true;
         Path path = Paths.get("Resources/archivoHuerto.dat");
@@ -63,6 +67,10 @@ public class Main {
         }
     }
 
+    /*
+    Trabajamos las propiedades según la elección dada
+     */
+
 
     public static String elegirPropiedades() throws IOException {
         System.out.println("¿Deseas usar la configuración por defecto o personalizar?");
@@ -90,6 +98,10 @@ public class Main {
             return "default";
         }
     }
+
+    /*
+    Menu inicial para comenzar
+     */
 
     public static void menuInicio() throws IOException {
         System.out.println("BIENVENIDO A STARDEW VALLEY");
@@ -119,6 +131,9 @@ public class Main {
     }
 
 
+    /*
+    Opcion de nueva partida
+     */
     public static void nuevaPartida() throws IOException {
         FileWork.borrarArchivosIniciales();
         String tipoConfig = elegirPropiedades();
@@ -133,6 +148,10 @@ public class Main {
 
         jugar(granja);
     }
+
+    /*
+    Opcion de cargar partida
+     */
 
     public static void cargarPartida() throws IOException {
         Path path = Paths.get("Resources/partida.bin");
@@ -151,9 +170,11 @@ public class Main {
         }
     }
 
+    /*********************************************************************************/
+
     public static void main(String[] args) {
         try {
-            menuInicio();
+            menuInicio(); //MAIN FLOW GENERAL DEL JUEGO
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();

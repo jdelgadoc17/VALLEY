@@ -29,6 +29,9 @@ public class Tienda implements Serializable {
             }
         }
     }
+    /*
+    Sacar tres semillas aleatorias
+     */
 
     public ArrayList<Semilla> seleccionarTresSemillasAleatorias() {
         ArrayList<Semilla> listaSemillas = new ArrayList<>(semillasSegunEstacion.values());
@@ -42,6 +45,10 @@ public class Tienda implements Serializable {
 
         return tresSemillas;
     }
+
+    /*
+    Se venden las semillas
+     */
 
     public boolean venderSemillas(Semilla semilla, int cantidad, double presupuesto) {
         double precioTotal = semilla.getPrecioCompraSemilla() * cantidad;

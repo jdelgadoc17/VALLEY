@@ -8,6 +8,10 @@ import java.util.Properties;
 import java.util.Scanner;
 
 public class Granja implements Serializable {
+
+    /*
+     estáticas para el tamaño de celda, claves de propiedades, rutas de archivos, y valores por defecto
+     */
     private static final int TAMANNO_CELDA = Integer.BYTES + 1 + Integer.BYTES;
     private static final String FILAS_KEY = "numFilas";
     private static final String COLUMNAS_KEY = "numColumnas";
@@ -52,6 +56,9 @@ public class Granja implements Serializable {
         System.out.println("- Frutos en almacen: " + almacen.getTotalFruto());
     }
 
+    /*
+    Crera huerto
+     */
     public void crearHuerto(Path path) throws IOException {
         int filas = Integer.parseInt(propiedades.getProperty("numFilas"));
         int columnas = Integer.parseInt(propiedades.getProperty("numColumnas"));
@@ -67,6 +74,10 @@ public class Granja implements Serializable {
 
         }
     }
+
+    /*
+    Plantar en la columna dada
+     */
 
     public void plantarEnColumna(int columnaSeleccionada) {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
@@ -149,6 +160,10 @@ public class Granja implements Serializable {
         }
     }
 
+    /*
+    Mostramos el huerto
+     */
+
     public void mostrarHuerto() {
         Path path = Paths.get(HUERTO_FILE_PATH);
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
@@ -179,6 +194,10 @@ public class Granja implements Serializable {
             System.out.println(e.getMessage());
         }
     }
+
+    /*
+    Se actualizan los cultivos
+     */
 
     public void actualizarCultivos() {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
@@ -222,6 +241,10 @@ public class Granja implements Serializable {
         }
     }
 
+    /*
+    Se etienden los cultivos con posible cosecha
+     */
+
     public void atenderCultivos(Path path) {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
         int columnas = Integer.parseInt(propiedades.getProperty(COLUMNAS_KEY));
@@ -260,6 +283,10 @@ public class Granja implements Serializable {
             throw new RuntimeException(e);
         }
     }
+
+    /*
+    Reestablecer después de la cosecha
+     */
 
     public void reestablecerCultivos() {
         int filas = Integer.parseInt(propiedades.getProperty(FILAS_KEY));
@@ -303,6 +330,10 @@ public class Granja implements Serializable {
 
         reestablecerCultivos();
     }
+
+    /*
+    Flow general de un nuevo dia
+     */
 
     public void iniciarNuevoDia() {
         diaActual++;
