@@ -61,7 +61,7 @@ public class Main {
                 case 6 -> {
                     Granja.guardarPartida(granja);
                     jugando = false;
-                    System.out.println("¡Gracias por jugar!");
+                    System.out.println("Gracias por jugar!");
                 }
             }
         }

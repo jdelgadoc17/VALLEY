@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
+
 public class Granja implements Serializable {
 
     /*
