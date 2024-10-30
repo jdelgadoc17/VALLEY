@@ -4,6 +4,7 @@ import java.io.ObjectInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -146,6 +147,16 @@ public class Main {
         Granja granja = new Granja(diaActual, tipoEstacion, presupuesto, new Tienda(), new Almacen(), tipoConfig);
         granja.crearHuerto(Paths.get("Resources/archivoHuerto.dat"));
 
+
+        Establo establo = new Establo();
+        GestionDB gestion = GestionDB.getInstance();
+        ArrayList<Animal> animales = gestion.getListaAnimales();
+        for(Animal animal: animales){
+            establo.agregarAnimal(animal);
+
+        }
+
+
         jugar(granja);
     }
 
@@ -161,6 +172,7 @@ public class Main {
                 Granja granja = (Granja) objectInput.readObject();
                 System.out.println("Partida cargada correctamente.");
                 jugar(granja);
+                jugar(establo);
             } catch (IOException | ClassNotFoundException e) {
                 System.out.println("Error al cargar la partida: " + e.getMessage());
             }
