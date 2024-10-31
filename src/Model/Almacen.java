@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,7 +74,7 @@ public class Almacen  implements Serializable {
 
     @Override
     public String toString() {
-        return "Almacen{" +
+        return "Model.Almacen{" +
                 "mapaFrutoSemilla=" + mapaFrutoSemilla +
                 '}';
     }

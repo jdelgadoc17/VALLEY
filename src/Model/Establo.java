@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -30,7 +32,7 @@ public class Establo implements Serializable {
 
     @Override
     public String toString() {
-        return "Establo{" +
+        return "Model.Establo{" +
                 "animales=" + animales +
                 '}';
     }

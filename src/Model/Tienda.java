@@ -1,8 +1,9 @@
+package Model;
+import Files.FileWork;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.TreeMap;
-
 public class Tienda implements Serializable {
 
     private TreeMap<Integer, Semilla> mapa_total_semillas;
@@ -73,7 +74,7 @@ public class Tienda implements Serializable {
 
     @Override
     public String toString() {
-        return "Tienda{" +
+        return "Model.Tienda{" +
                 "mapa_total_semillas=" + mapa_total_semillas +
                 ", semillasSegunEstacion=" + semillasSegunEstacion +
                 '}';

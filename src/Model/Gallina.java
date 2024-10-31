@@ -1,6 +1,8 @@
+package Model;
+
 import java.io.Serializable;
 
-public class Gallina extends  Animal implements Serializable {
+public class Gallina extends Animal implements Serializable {
 
 
     public Gallina(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
@@ -86,7 +88,7 @@ public class Gallina extends  Animal implements Serializable {
 
     @Override
     public String toString() {
-        return "Gallina{" +
+        return "Model.Gallina{" +
                 "producto=" + producto +
                 ", alimento=" + alimento +
                 ", diaInsercion=" + diaInsercion +

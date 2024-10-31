@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.Serializable;
 
 public abstract class Animal implements Serializable {
@@ -76,7 +78,7 @@ public abstract class Animal implements Serializable {
 
     @Override
     public String toString() {
-        return "Animal{" +
+        return "Model.Animal{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
                 ", tipo=" + tipo +

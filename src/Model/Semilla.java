@@ -1,3 +1,5 @@
+package Model;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -81,7 +83,7 @@ public class Semilla  implements Serializable, Comparable<Semilla> {
 
     @Override
     public String toString() {
-        return "Semilla{" +
+        return "Model.Semilla{" +
                 "id=" + id +
                 "nombre='" + nombre + '\'' +
                 ", estacion=" + estacion +

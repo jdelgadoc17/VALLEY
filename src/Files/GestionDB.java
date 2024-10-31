@@ -1,3 +1,7 @@
+package Files;
+
+import Model.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -220,7 +224,7 @@ public class GestionDB {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al cargar animales: " + e.getMessage());
+            System.out.println("Error al cargar los animales: " + e.getMessage());
         }
     }
 

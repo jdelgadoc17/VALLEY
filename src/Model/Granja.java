@@ -1,5 +1,6 @@
+package Model;
+
 import java.io.*;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -316,16 +317,16 @@ public class Granja implements Serializable {
 
     public void cambiarEstacion() {
         switch (tipoEstacion) {
-            case PRIMAVERA:
+            case TipoEstacion.PRIMAVERA:
                 tipoEstacion = TipoEstacion.VERANO;
                 break;
-            case VERANO:
+            case TipoEstacion.VERANO:
                 tipoEstacion = TipoEstacion.OTOÑO;
                 break;
-            case OTOÑO:
+            case TipoEstacion.OTOÑO:
                 tipoEstacion = TipoEstacion.INVIERNO;
                 break;
-            case INVIERNO:
+            case TipoEstacion.INVIERNO:
                 tipoEstacion = TipoEstacion.PRIMAVERA;
                 break;
         }
@@ -478,7 +479,7 @@ public class Granja implements Serializable {
 
     @Override
     public String toString() {
-        return "Granja{" +
+        return "Model.Granja{" +
                 "diaActual=" + diaActual +
                 ", tipoEstacion=" + tipoEstacion +
                 ", presupuesto=" + presupuesto +

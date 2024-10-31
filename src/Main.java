@@ -1,3 +1,5 @@
+import Model.*;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -34,7 +36,7 @@ public class Main {
                 System.out.println("Elige una opción:");
                 System.out.println("1. Iniciar Nuevo Día");
                 System.out.println("2. Huerto");
-                System.out.println("3. Establo");
+                System.out.println("3. Model.Establo");
                 System.out.println("4. Salir");
 
                 opcion = pedOpc();
@@ -204,12 +206,12 @@ public class Main {
         int opc;
 
         do {
-            System.out.println("Menú del Establo:");
+            System.out.println("Menú del Model.Establo:");
             System.out.println("1. Producir");
             System.out.println("2. Alimentar");
             System.out.println("3. Vender Productos");
             System.out.println("4. Rellenar Comedero");
-            System.out.println("5. Mostrar Estado del Establo");
+            System.out.println("5. Mostrar Estado del Model.Establo");
             System.out.println("6. Volver al Menú");
 
             opc = sc.nextInt();

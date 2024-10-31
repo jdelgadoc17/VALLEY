@@ -1,10 +1,12 @@
+package Model;
+
 import java.io.Serializable;
 
 public class Vaca extends Animal implements Serializable {
     private double peso;
 
-    public Vaca(int id, String nombre,  TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto, double peso) {
-        super(id, nombre, tipo, diaInsercion, alimento, producto);  // Se usa el enum TipoAnimal.VACA
+    public Vaca(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto, double peso) {
+        super(id, nombre, tipo, diaInsercion, alimento, producto);  // Se usa el enum Model.TipoAnimal.VACA
         this.peso = peso;
     }
 
@@ -22,7 +24,7 @@ public class Vaca extends Animal implements Serializable {
 
     @Override
     public String toString() {
-        return "Vaca{" +
+        return "Model.Vaca{" +
                 "peso=" + peso +
                 ", id=" + id +
                 ", nombre='" + nombre + '\'' +
