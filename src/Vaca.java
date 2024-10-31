@@ -14,6 +14,10 @@ public class Vaca extends Animal {
         this.peso = peso;
     }
 
+     public int producir() {
+        return (int) (0.01 * this.getPeso());
+    }
+
     @Override
     public String toString() {
         return "Vaca{" +

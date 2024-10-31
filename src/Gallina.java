@@ -66,6 +66,22 @@ public class Gallina extends  Animal {
         super.setProducto(producto);
     }
 
+
+
+
+    public int producir(int diaActual){
+        int diasEnJuego = diaActual - this.diaInsercion;
+        if (diasEnJuego > 3 && diasEnJuego <= 40) {
+            return 2;
+        } else if (diasEnJuego > 40) {
+            return 1;
+        }
+        return 0;
+    }
+
+
+
+
     @Override
     public String toString() {
         return "Gallina{" +

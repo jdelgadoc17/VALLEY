@@ -66,6 +66,14 @@ public class Cerdo extends  Animal{
         super.setProducto(producto);
     }
 
+    public int producir(TipoEstacion estacion) {
+        return switch (estacion) {
+            case PRIMAVERA, VERANO -> (int) (Math.random() * 2) + 2;
+            case OTOÑO -> (int) (Math.random() * 2);
+            default -> 0;
+        };
+    }
+
     @Override
     public String toString() {
         return "Cerdo{" +

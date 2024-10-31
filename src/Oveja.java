@@ -64,6 +64,22 @@ public class Oveja extends Animal{
         super.setProducto(producto);
     }
 
+
+
+
+    public int producir(int diaActual) {
+        int diasDesdeUltimoEsquilado = diaActual - obtenerDiaUltimoEsquilado();  //QUE ES ESTO
+        if (diasDesdeUltimoEsquilado >= 2) {
+            actualizarFechaEsquilado(diaActual);
+            return 5;
+        }
+        return 0;
+    }
+
+
+
+
+
     @Override
     public String toString() {
         return "Oveja{" +

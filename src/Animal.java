@@ -66,6 +66,13 @@ public abstract class Animal {
         this.producto = producto;
     }
 
+
+
+
+    public boolean isAlimentado(){
+        return true;
+    }
+
     @Override
     public String toString() {
         return "Animal{" +
@@ -76,5 +83,9 @@ public abstract class Animal {
                 ", alimento=" + alimento +
                 ", producto=" + producto +
                 '}';
+    }
+
+    public void setAlimentado(boolean b) {
+
     }
 }

@@ -156,8 +156,20 @@ public class Main {
 
         }
 
+        Scanner sc = new Scanner(System.in);
+        System.out.println("1 Para granja");
+        System.out.println("2 para establo");
+        int opc = Integer.parseInt(sc.next());
 
-        jugar(granja);
+        if(opc==1){
+            jugar(granja);
+
+        }else if(opc==2){
+            jugarEstablo();
+        }
+
+
+
     }
 
     /*
@@ -165,21 +177,78 @@ public class Main {
      */
 
     public static void cargarPartida() throws IOException {
-        Path path = Paths.get("Resources/partida.bin");
+        Path pathGranja = Paths.get("Resources/partidaGranja.bin");
+        Path pathEstablo = Paths.get("Resources/partidaEstablo.bin");
 
-        if (Files.exists(path)) {
-            try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(path.toFile()))) {
-                Granja granja = (Granja) objectInput.readObject();
-                System.out.println("Partida cargada correctamente.");
-                jugar(granja);
-                jugar(establo);
+        Granja granja = null;
+        Establo establo = null;
+
+        // Cargar la Granja
+        if (Files.exists(pathGranja)) {
+            try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(pathGranja.toFile()))) {
+                granja = (Granja) objectInput.readObject();
+                System.out.println("Partida de la granja cargada correctamente.");
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Error al cargar la partida: " + e.getMessage());
+                System.out.println("Error al cargar la partida de la granja: " + e.getMessage());
             }
         } else {
-            System.out.println("No se encontró ningún archivo de huerto.");
+            System.out.println("No se encontró ninguna partida guardada de la granja.");
             nuevaPartida();
         }
+
+
+    }
+
+    public static void jugarEstablo(int diaActual){
+        GestionDB gestionDB = GestionDB.getInstance();
+        Establo establo = new Establo();
+        Scanner sc = new Scanner(System.in);
+        int opc=0;
+        do{
+            System.out.println("Dame una opcion");
+
+
+
+
+
+            switch (opc){
+
+                case 1:
+                    establo.producir(diaActual);
+                    break;
+                case 2:
+                    establo.alimentar();
+                    break;
+
+                case 3:
+                    gestionDB.venderProductos();
+                    break;
+                case 4:
+                    gestionDB.rellenarComedero();
+                    break;
+                case 5:
+                    establo.mostrarAnimales();
+                    gestionDB.mostrarProductos();
+                    gestionDB.mostrarAlimentos();
+                    break;
+                case 6:
+                    System.out.println("Gracias por jugar!");
+                    break;
+
+            }
+
+
+            opc = sc.nextInt();
+
+        }while(opc!=6);
+
+
+
+
+
+
+
+
     }
 
     /*********************************************************************************/
