@@ -25,42 +25,30 @@ public class Main {
     /*
     Flow del juego
      */
-
-    public static void jugar(Granja granja) {
+    public static void jugar(Granja granja, Establo establo) {
         boolean jugando = true;
-        Path path = Paths.get("Resources/archivoHuerto.dat");
 
         while (jugando) {
             int opcion;
             do {
                 System.out.println("Elige una opción:");
                 System.out.println("1. Iniciar Nuevo Día");
-                System.out.println("2. Atender Cultivos");
-                System.out.println("3. Plantar en Columna");
-                System.out.println("4. Vender Cosecha");
-                System.out.println("5. Mostrar Información de la Granja");
-                System.out.println("6. Salir");
+                System.out.println("2. Huerto");
+                System.out.println("3. Establo");
+                System.out.println("4. Salir");
 
                 opcion = pedOpc();
-                if (opcion < 1 || opcion > 6) {
+                if (opcion < 1 || opcion > 4) {
                     System.out.println("Opción incorrecta. Por favor elige una opción válida.");
                 }
-            } while (opcion < 1 || opcion > 6);
+            } while (opcion < 1 || opcion > 4);
 
             switch (opcion) {
                 case 1 -> granja.iniciarNuevoDia();
-                case 2 -> granja.atenderCultivos(path);
-                case 3 -> {
-                    int col = pedColumna();
-                    granja.plantarEnColumna(col);
-                }
-                case 4 -> granja.venderFruta();
-                case 5 -> {
-                    granja.mostrarInfo();
-                    granja.mostrarHuerto();
-                }
-                case 6 -> {
-                    Granja.guardarPartida(granja);
+                case 2 -> mostrarMenuHuerto(granja);
+                case 3 -> jugarEstablo(establo, granja.getDiaActual(), granja.getTipoEstacion(), granja);
+                case 4 -> {
+                    guardarPartida(granja);
                     jugando = false;
                     System.out.println("Gracias por jugar!");
                 }
@@ -68,11 +56,45 @@ public class Main {
         }
     }
 
+    public static void mostrarMenuHuerto(Granja granja) {
+        Path path = Paths.get("Resources/archivoHuerto.dat");
+
+        boolean enHuerto = true;
+        while (enHuerto) {
+            int opcion;
+            do {
+                System.out.println("Menú de Huerto:");
+                System.out.println("1. Atender Cultivos");
+                System.out.println("2. Plantar en Columna");
+                System.out.println("3. Vender Cosecha");
+                System.out.println("4. Mostrar Información del Huerto");
+                System.out.println("5. Volver al Menú Principal");
+
+                opcion = pedOpc();
+                if (opcion < 1 || opcion > 5) {
+                    System.out.println("Opción incorrecta. Por favor elige una opción válida.");
+                }
+            } while (opcion < 1 || opcion > 5);
+
+            switch (opcion) {
+                case 1 -> granja.atenderCultivos(path);
+                case 2 -> {
+                    int col = pedColumna();
+                    granja.plantarEnColumna(col);
+                }
+                case 3 -> granja.venderFruta();
+                case 4 -> {
+                    granja.mostrarInfo();
+                    granja.mostrarHuerto();
+                }
+                case 5 -> enHuerto = false;
+            }
+        }
+    }
+
     /*
     Trabajamos las propiedades según la elección dada
      */
-
-
     public static String elegirPropiedades() throws IOException {
         System.out.println("¿Deseas usar la configuración por defecto o personalizar?");
         System.out.println("1. Configuración por defecto");
@@ -103,7 +125,6 @@ public class Main {
     /*
     Menu inicial para comenzar
      */
-
     public static void menuInicio() throws IOException {
         System.out.println("BIENVENIDO A STARDEW VALLEY");
         System.out.println("--------------------------------");
@@ -131,7 +152,6 @@ public class Main {
         } while (opcion != 1 && opcion != 2);
     }
 
-
     /*
     Opcion de nueva partida
      */
@@ -147,35 +167,18 @@ public class Main {
         Granja granja = new Granja(diaActual, tipoEstacion, presupuesto, new Tienda(), new Almacen(), tipoConfig);
         granja.crearHuerto(Paths.get("Resources/archivoHuerto.dat"));
 
-
         Establo establo = new Establo();
         GestionDB gestion = GestionDB.getInstance();
         ArrayList<Animal> animales = gestion.getListaAnimales();
-        for(Animal animal: animales){
-            establo.agregarAnimal(animal);
+        establo.setAnimales(animales);
 
-        }
-
-        Scanner sc = new Scanner(System.in);
-        System.out.println("1 Para granja");
-        System.out.println("2 para establo");
-        int opc = Integer.parseInt(sc.next());
-
-        if(opc==1){
-            jugar(granja);
-
-        }else if(opc==2){
-            jugarEstablo();
-        }
-
-
-
+        // Llamar a jugar con los objetos creados
+        jugar(granja, establo);
     }
 
     /*
     Opcion de cargar partida
      */
-
     public static void cargarPartida() throws IOException {
         Path pathGranja = Paths.get("Resources/partidaGranja.bin");
         Path pathEstablo = Paths.get("Resources/partidaEstablo.bin");
@@ -196,66 +199,58 @@ public class Main {
             nuevaPartida();
         }
 
+        // Cargar el Establo
+        if (Files.exists(pathEstablo)) {
+            try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(pathEstablo.toFile()))) {
+                establo = (Establo) objectInput.readObject();
+                System.out.println("Partida del establo cargada correctamente.");
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Error al cargar la partida del establo: " + e.getMessage());
+            }
+        }
 
+        // Verificar si ambas partes de la partida están cargadas
+        if (granja != null && establo != null) {
+            jugar(granja, establo);
+        }
     }
 
-    public static void jugarEstablo(int diaActual){
+    public static void jugarEstablo(Establo establo, int diaActual, TipoEstacion tipoEstacion, Granja granja) {
         GestionDB gestionDB = GestionDB.getInstance();
-        Establo establo = new Establo();
         Scanner sc = new Scanner(System.in);
-        int opc=0;
-        do{
-            System.out.println("Dame una opcion");
+        int opc;
 
+        do {
+            System.out.println("Menú del Establo:");
+            System.out.println("1. Producir");
+            System.out.println("2. Alimentar");
+            System.out.println("3. Vender Productos");
+            System.out.println("4. Rellenar Comedero");
+            System.out.println("5. Mostrar Estado del Establo");
+            System.out.println("6. Volver al Menú Principal");
 
-
-
-
-            switch (opc){
-
-                case 1:
-                    establo.producir(diaActual);
-                    break;
-                case 2:
-                    establo.alimentar();
-                    break;
-
-                case 3:
-                    gestionDB.venderProductos();
-                    break;
-                case 4:
-                    gestionDB.rellenarComedero();
-                    break;
-                case 5:
+            opc = sc.nextInt();
+            switch (opc) {
+                case 1 -> establo.producir(diaActual, tipoEstacion);
+                case 2 -> establo.alimentar();
+                case 3 -> gestionDB.venderProductos(granja);
+                case 4 -> gestionDB.rellenarComedero(granja);
+                case 5 -> {
                     establo.mostrarAnimales();
                     gestionDB.mostrarProductos();
                     gestionDB.mostrarAlimentos();
-                    break;
-                case 6:
-                    System.out.println("Gracias por jugar!");
-                    break;
-
+                }
+                case 6 -> System.out.println("Regresando al menú principal...");
+                default -> System.out.println("Opción no válida. Intente nuevamente.");
             }
-
-
-            opc = sc.nextInt();
-
-        }while(opc!=6);
-
-
-
-
-
-
-
-
+        } while (opc != 6);
     }
 
     /*********************************************************************************/
 
     public static void main(String[] args) {
         try {
-            menuInicio(); //MAIN FLOW GENERAL DEL JUEGO
+            menuInicio();
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
             e.printStackTrace();

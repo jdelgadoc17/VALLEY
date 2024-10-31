@@ -314,6 +314,12 @@ public class GestionDB {
             System.out.println("Error al registrar la producción: " + e.getMessage());
         }
     }
+
+    public ArrayList<Animal> getListaAnimales() {
+        return new ArrayList<>(listaAnimales);
+    }
+
+
 }
 
 

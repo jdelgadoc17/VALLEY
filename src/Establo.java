@@ -8,7 +8,6 @@ public class Establo {
         this.animales = new ArrayList<>();
     }
 
-
     public ArrayList<Animal> getAnimales() {
         return animales;
     }
@@ -21,21 +20,18 @@ public class Establo {
         animales.add(animal);
     }
 
-
     public void producir(int diaActual, TipoEstacion tipoEstacion) {
-        GestionDB gestionDB = GestionDB.getInstance();  // Obtiene instancia de la base de datos
+        GestionDB gestionDB = GestionDB.getInstance();
 
-        // Variables para acumular las producciones
         int totalHuevos = 0;
         int totalLana = 0;
         int totalLeche = 0;
         int totalTrufas = 0;
 
         for (Animal animal : animales) {
-            if (animal.isAlimentado()) {  // Verifica que el animal esté alimentado
+            if (animal.isAlimentado()) {
                 int cantidadProducida = 0;
 
-                // Llama al método `producir` según el tipo de animal
                 if (animal instanceof Gallina) {
                     cantidadProducida = ((Gallina) animal).producir(diaActual);
                     totalHuevos += cantidadProducida;
@@ -53,7 +49,6 @@ public class Establo {
                 if (cantidadProducida > 0) {
                     gestionDB.actualizarCantidad(animal.getProducto().getIdProducto(), cantidadProducida);
                     gestionDB.registrarProduccion(animal, cantidadProducida, diaActual);
-
                     animal.setAlimentado(false);
                 } else {
                     System.out.println(animal.getNombre() + " no ha producido nada hoy.");
@@ -63,7 +58,6 @@ public class Establo {
             }
         }
 
-        // Mostrar el resumen de producción
         mostrarResumenProduccion(totalHuevos, totalLana, totalLeche, totalTrufas);
     }
 
@@ -83,19 +77,14 @@ public class Establo {
         }
     }
 
+    public void alimentar() {
+        for (Animal animal : animales) {
+            animal.setAlimentado(true);
+            System.out.println(animal.getNombre() + " ha sido alimentado.");
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-    public void mostrarAnimales(){
+    public void mostrarAnimales() {
         for (Animal animal : animales) {
             System.out.println(animal);
         }
