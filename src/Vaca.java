@@ -1,4 +1,6 @@
-public class Vaca extends Animal {
+import java.io.Serializable;
+
+public class Vaca extends Animal implements Serializable {
     private double peso;
 
     public Vaca(int id, String nombre,  TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto, double peso) {

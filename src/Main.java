@@ -25,7 +25,7 @@ public class Main {
     /*
     Flow del juego
      */
-    public static void jugar(Granja granja, Establo establo) {
+    public static void jugar(Granja granja) {
         boolean jugando = true;
 
         while (jugando) {
@@ -46,9 +46,8 @@ public class Main {
             switch (opcion) {
                 case 1 -> granja.iniciarNuevoDia();
                 case 2 -> mostrarMenuHuerto(granja);
-                case 3 -> jugarEstablo(establo, granja.getDiaActual(), granja.getTipoEstacion(), granja);
+                case 3 -> jugarEstablo(granja); // Solo necesitamos pasar `granja`
                 case 4 -> {
-                    guardarPartida(granja);
                     jugando = false;
                     System.out.println("Gracias por jugar!");
                 }
@@ -167,13 +166,11 @@ public class Main {
         Granja granja = new Granja(diaActual, tipoEstacion, presupuesto, new Tienda(), new Almacen(), tipoConfig);
         granja.crearHuerto(Paths.get("Resources/archivoHuerto.dat"));
 
-        Establo establo = new Establo();
         GestionDB gestion = GestionDB.getInstance();
         ArrayList<Animal> animales = gestion.getListaAnimales();
-        establo.setAnimales(animales);
+        granja.getEstablo().setAnimales(animales);
 
-        // Llamar a jugar con los objetos creados
-        jugar(granja, establo);
+        jugar(granja);
     }
 
     /*
@@ -181,12 +178,9 @@ public class Main {
      */
     public static void cargarPartida() throws IOException {
         Path pathGranja = Paths.get("Resources/partidaGranja.bin");
-        Path pathEstablo = Paths.get("Resources/partidaEstablo.bin");
 
         Granja granja = null;
-        Establo establo = null;
 
-        // Cargar la Granja
         if (Files.exists(pathGranja)) {
             try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(pathGranja.toFile()))) {
                 granja = (Granja) objectInput.readObject();
@@ -199,23 +193,12 @@ public class Main {
             nuevaPartida();
         }
 
-        // Cargar el Establo
-        if (Files.exists(pathEstablo)) {
-            try (ObjectInputStream objectInput = new ObjectInputStream(new FileInputStream(pathEstablo.toFile()))) {
-                establo = (Establo) objectInput.readObject();
-                System.out.println("Partida del establo cargada correctamente.");
-            } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Error al cargar la partida del establo: " + e.getMessage());
-            }
-        }
-
-        // Verificar si ambas partes de la partida están cargadas
-        if (granja != null && establo != null) {
-            jugar(granja, establo);
+        if (granja != null) {
+            jugar(granja);
         }
     }
 
-    public static void jugarEstablo(Establo establo, int diaActual, TipoEstacion tipoEstacion, Granja granja) {
+    public static void jugarEstablo(Granja granja) {
         GestionDB gestionDB = GestionDB.getInstance();
         Scanner sc = new Scanner(System.in);
         int opc;
@@ -227,21 +210,21 @@ public class Main {
             System.out.println("3. Vender Productos");
             System.out.println("4. Rellenar Comedero");
             System.out.println("5. Mostrar Estado del Establo");
-            System.out.println("6. Volver al Menú Principal");
+            System.out.println("6. Volver al Menú");
 
             opc = sc.nextInt();
             switch (opc) {
-                case 1 -> establo.producir(diaActual, tipoEstacion);
-                case 2 -> establo.alimentar();
+                case 1 -> granja.producir(granja.getDiaActual(), granja.getTipoEstacion());
+                case 2 -> granja.alimentar();
                 case 3 -> gestionDB.venderProductos(granja);
                 case 4 -> gestionDB.rellenarComedero(granja);
                 case 5 -> {
-                    establo.mostrarAnimales();
+                    granja.getEstablo().mostrarAnimales();
                     gestionDB.mostrarProductos();
                     gestionDB.mostrarAlimentos();
                 }
                 case 6 -> System.out.println("Regresando al menú principal...");
-                default -> System.out.println("Opción no válida. Intente nuevamente.");
+                default -> System.out.println("Opción no válida.");
             }
         } while (opc != 6);
     }

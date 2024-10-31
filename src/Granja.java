@@ -31,6 +31,7 @@ public class Granja implements Serializable {
     private Tienda tienda;
     private Almacen almacen;
     private Properties propiedades;
+    private Establo establo;
 
     public Granja(int diaActual, TipoEstacion tipoEstacion, double presupuesto, Tienda tienda, Almacen almacen, String tipoConfig) {
         this.diaActual = diaActual;
@@ -38,8 +39,8 @@ public class Granja implements Serializable {
         this.presupuesto = presupuesto;
         this.tienda = tienda;
         this.almacen = almacen;
+        this.establo = new Establo();
 
-        // Cargar las propiedades desde FileWork según el tipo de configuración
         this.propiedades = FileWork.getInstancia().cargarProperties(tipoConfig);
 
         if (this.propiedades == null) {
@@ -390,6 +391,90 @@ public class Granja implements Serializable {
     public void setAlmacen(Almacen almacen) {
         this.almacen = almacen;
     }
+
+
+    public void alimentar() {
+        for (Animal animal : establo.getAnimales()) {
+            animal.setAlimentado(true);
+            System.out.println(animal.getNombre() + " ha sido alimentado.");
+        }
+    }
+
+
+
+    private void mostrarResumenProduccion(int totalHuevos, int totalLana, int totalLeche, int totalTrufas) {
+        System.out.println("Resumen de Producción del Día:");
+        if (totalHuevos > 0) {
+            System.out.println("Se han producido " + totalHuevos + " unidades de huevos.");
+        }
+        if (totalLana > 0) {
+            System.out.println("Se han producido " + totalLana + " unidades de lana.");
+        }
+        if (totalLeche > 0) {
+            System.out.println("Se han producido " + totalLeche + " unidades de leche.");
+        }
+        if (totalTrufas > 0) {
+            System.out.println("Se han producido " + totalTrufas + " unidades de trufas.");
+        }
+    }
+
+    public void producir(int diaActual, TipoEstacion tipoEstacion) {
+        GestionDB gestionDB = GestionDB.getInstance();
+
+        int totalHuevos = 0;
+        int totalLana = 0;
+        int totalLeche = 0;
+        int totalTrufas = 0;
+
+        for (Animal animal : establo.getAnimales()) {
+            if (animal.isAlimentado()) {
+                int cantidadProducida = 0;
+
+                if (animal instanceof Gallina) {
+                    cantidadProducida = ((Gallina) animal).producir(diaActual);
+                    totalHuevos += cantidadProducida;
+                } else if (animal instanceof Oveja) {
+                    cantidadProducida = ((Oveja) animal).producir();
+                    totalLana += cantidadProducida;
+                } else if (animal instanceof Vaca) {
+                    cantidadProducida = ((Vaca) animal).producir();
+                    totalLeche += cantidadProducida;
+                } else if (animal instanceof Cerdo) {
+                    cantidadProducida = ((Cerdo) animal).producir(tipoEstacion);
+                    totalTrufas += cantidadProducida;
+                }
+
+                if (cantidadProducida > 0) {
+                    gestionDB.actualizarCantidad(animal.getProducto().getIdProducto(), cantidadProducida);
+                    gestionDB.registrarProduccion(animal, cantidadProducida, diaActual);
+                    animal.setAlimentado(false);
+                } else {
+                    System.out.println(animal.getNombre() + " no ha producido nada hoy.");
+                }
+            } else {
+                System.out.println(animal.getNombre() + " no ha sido alimentado y no puede producir.");
+            }
+        }
+
+        mostrarResumenProduccion(totalHuevos, totalLana, totalLeche, totalTrufas);
+    }
+
+
+    public Establo getEstablo() {
+        return establo;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public String toString() {

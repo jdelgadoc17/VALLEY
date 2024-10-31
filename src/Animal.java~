@@ -1,6 +1,5 @@
-import java.io.Serializable;
 
-public abstract class Animal implements Serializable {
+public abstract class Animal {
 
     protected int id;
     protected String nombre;

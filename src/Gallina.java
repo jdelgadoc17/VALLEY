@@ -1,4 +1,6 @@
-public class Gallina extends  Animal {
+import java.io.Serializable;
+
+public class Gallina extends  Animal implements Serializable {
 
 
     public Gallina(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
