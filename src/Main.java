@@ -176,6 +176,8 @@ public class Main {
         GestionDB gestion = GestionDB.getInstance();
         ArrayList<Animal> animales = gestion.getListaAnimales();
         granja.getEstablo().setAnimales(animales);
+        GestionDB gestionDB = GestionDB.getInstance();
+        gestionDB.restaurarValores();
 
         jugar(granja);
     }
@@ -232,7 +234,9 @@ public class Main {
                 }
                 case 6 -> {
                     System.out.println("Regresando al menú principal...");
+
                     guardarPartida(granja);
+
                 }
                 default -> System.out.println("Opción no válida.");
             }

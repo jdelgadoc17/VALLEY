@@ -256,6 +256,22 @@ public class GestionDB {
         }
     }
 
+    public void restaurarValores() {
+        String queryAlimentos = "UPDATE Alimentos SET cantidad_disponible = 0";
+        String queryProductos = "UPDATE Productos SET cantidad_disponible = 0";
+
+        try (
+                PreparedStatement stmtAlimentos = connection.prepareStatement(queryAlimentos);
+                PreparedStatement stmtProductos = connection.prepareStatement(queryProductos)
+        ) {
+            stmtAlimentos.executeUpdate();
+            stmtProductos.executeUpdate();
+            System.out.println("Valores restaurados en Alimentos y Productos.");
+        } catch (SQLException e) {
+            System.out.println("Error al restaurar valores en la base de datos: " + e.getMessage());
+        }
+    }
+
 
     public void actualizarCantidad(int id, int cantidad) {
         String query = "UPDATE Productos SET cantidad_disponible = cantidad_disponible + ? WHERE id = ?";
