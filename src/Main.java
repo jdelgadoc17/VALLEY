@@ -13,6 +13,8 @@ import java.util.Scanner;
 import Files.FileWork;
 import Files.GestionDB;
 
+import static Model.Granja.guardarPartida;
+
 public class Main {
 
     public static int pedOpc() {
@@ -182,7 +184,7 @@ public class Main {
     Opcion de cargar partida
      */
     public static void cargarPartida() throws IOException {
-        Path pathGranja = Paths.get("Resources/partidaGranja.bin");
+        Path pathGranja = Paths.get("Resources/partida.bin");
 
         Granja granja = null;
 
@@ -228,7 +230,10 @@ public class Main {
                     gestionDB.mostrarProductos();
                     gestionDB.mostrarAlimentos();
                 }
-                case 6 -> System.out.println("Regresando al menú principal...");
+                case 6 -> {
+                    System.out.println("Regresando al menú principal...");
+                    guardarPartida(granja);
+                }
                 default -> System.out.println("Opción no válida.");
             }
         } while (opc != 6);

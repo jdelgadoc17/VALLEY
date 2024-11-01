@@ -245,7 +245,7 @@ public class GestionDB {
 
 
     public void registrarConsumo(Animal animal, int cantidadConsumida) {
-        String query = "INSERT INTO HistorialConsumo (id_animal, cantidad_disponible, fecha_consumo) VALUES (?, ?, NOW())";
+        String query = "INSERT INTO HistorialConsumo (id_animal, cantidad_consumida, fecha_consumo) VALUES (?, ?, NOW())";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, animal.getId());
             stmt.setInt(2, cantidadConsumida);
