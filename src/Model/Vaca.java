@@ -1,5 +1,5 @@
 package Model;
-
+import Files.GestionDB;
 import java.io.Serializable;
 
 public class Vaca extends Animal implements Serializable {
@@ -21,6 +21,35 @@ public class Vaca extends Animal implements Serializable {
      public int producir() {
         return (int) (0.01 * this.getPeso());
     }
+
+
+    public boolean alimentar(int diaActual) {
+        GestionDB gestionDB = GestionDB.getInstance();
+        int diasEnJuego = diaActual - getDiaInsercion();
+        int cantidadNecesaria;
+
+        if (diasEnJuego < 10) {
+            cantidadNecesaria = 1;
+        } else if (diasEnJuego < 40) {
+            cantidadNecesaria = 3;
+        } else {
+            cantidadNecesaria = 2;
+        }
+
+        int cantidadDisponible = gestionDB.getCantidadDisponibleAlimento(this.getAlimento().getIdAlimento());
+
+        if (cantidadDisponible >= cantidadNecesaria) {
+            gestionDB.actualizarCantidad(this.getAlimento().getIdAlimento(), -cantidadNecesaria);
+            gestionDB.registrarConsumo(this, cantidadNecesaria);
+            this.setAlimentado(true);
+            System.out.println(getNombre() + " ha sido alimentada.");
+            return true;
+        } else {
+            System.out.println("No hay suficiente alimento para " + getNombre() + ".");
+            return false;
+        }
+    }
+
 
     @Override
     public String toString() {

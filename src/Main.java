@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
+import Files.FileWork;
+import Files.GestionDB;
+
 public class Main {
 
     public static int pedOpc() {
@@ -48,7 +51,7 @@ public class Main {
             switch (opcion) {
                 case 1 -> granja.iniciarNuevoDia();
                 case 2 -> mostrarMenuHuerto(granja);
-                case 3 -> jugarEstablo(granja); // Solo necesitamos pasar `granja`
+                case 3 -> jugarEstablo(granja);
                 case 4 -> {
                     jugando = false;
                     System.out.println("Gracias por jugar!");

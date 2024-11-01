@@ -1,5 +1,9 @@
 package Model;
 
+import Files.FileWork;
+import Files.GestionDB;
+
+
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -395,11 +399,35 @@ public class Granja implements Serializable {
 
 
     public void alimentar() {
+        boolean todosAlimentados = true;
+
         for (Animal animal : establo.getAnimales()) {
-            animal.setAlimentado(true);
-            System.out.println(animal.getNombre() + " ha sido alimentado.");
+            boolean alimentado = false;
+
+            if (animal instanceof Vaca) {
+                alimentado = ((Vaca) animal).alimentar(diaActual);
+            } else if (animal instanceof Oveja) {
+                alimentado = ((Oveja) animal).alimentar();
+            } else if (animal instanceof Cerdo) {
+                alimentado = ((Cerdo) animal).alimentar();
+            } else if (animal instanceof Gallina) {
+                alimentado = ((Gallina) animal).alimentar();
+            }
+
+            // Verificamos si algún animal no fue alimentado
+            if (!alimentado) {
+                todosAlimentados = false;
+            }
+        }
+
+        if (todosAlimentados) {
+            System.out.println("Todos los animales han sido alimentados.");
+        } else {
+            System.out.println("No se pudo alimentar a todos los animales.");
         }
     }
+
+
 
 
 

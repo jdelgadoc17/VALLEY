@@ -1,5 +1,7 @@
 package Model;
 
+import Files.GestionDB;
+
 import java.io.Serializable;
 
 public class Gallina extends Animal implements Serializable {
@@ -81,6 +83,23 @@ public class Gallina extends Animal implements Serializable {
             return 1;
         }
         return 0;
+    }
+
+    public boolean alimentar() {
+        GestionDB gestionDB = GestionDB.getInstance();
+        int cantidadNecesaria = 1;
+        int cantidadDisponible = gestionDB.getCantidadDisponibleAlimento(this.getAlimento().getIdAlimento());
+
+        if (cantidadDisponible >= cantidadNecesaria) {
+            gestionDB.actualizarCantidad(this.getAlimento().getIdAlimento(), -cantidadNecesaria);
+            gestionDB.registrarConsumo(this, cantidadNecesaria);
+            this.setAlimentado(true);
+            System.out.println(getNombre() + " ha sido alimentada.");
+            return true;
+        } else {
+            System.out.println("No hay suficiente alimento para " + getNombre() + ".");
+            return false;
+        }
     }
 
 

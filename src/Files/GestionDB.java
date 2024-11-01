@@ -229,6 +229,34 @@ public class GestionDB {
     }
 
 
+    public int getCantidadDisponibleAlimento(int idAlimento) {
+        String query = "SELECT cantidad_disponible FROM Alimentos WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idAlimento);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("cantidad_disponible");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error al obtener cantidad disponible de alimento: " + e.getMessage());
+        }
+        return 0;
+    }
+
+
+    public void registrarConsumo(Animal animal, int cantidadConsumida) {
+        String query = "INSERT INTO HistorialConsumo (id_animal, cantidad_disponible, fecha_consumo) VALUES (?, ?, NOW())";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, animal.getId());
+            stmt.setInt(2, cantidadConsumida);
+            stmt.executeUpdate();
+            System.out.println("Consumo registrado en HistorialConsumo para el animal: " + animal.getNombre());
+        } catch (SQLException e) {
+            System.out.println("Error al registrar el consumo: " + e.getMessage());
+        }
+    }
+
+
     public void actualizarCantidad(int id, int cantidad) {
         String query = "UPDATE Productos SET cantidad_disponible = cantidad_disponible + ? WHERE id = ?";
 
