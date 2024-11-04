@@ -213,7 +213,7 @@ public class Main {
         int opc;
 
         do {
-            System.out.println("Menú del Establo:");
+            System.out.println("Menú del Model.Establo:");
             System.out.println("1. Producir");
             System.out.println("2. Alimentar");
             System.out.println("3. Vender Productos");

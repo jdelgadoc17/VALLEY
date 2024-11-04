@@ -42,6 +42,7 @@ public class Vaca extends Animal implements Serializable {
             gestionDB.actualizarCantidad(this.getAlimento().getIdAlimento(), -cantidadNecesaria);
             gestionDB.registrarConsumo(this, cantidadNecesaria);
             this.setAlimentado(true);
+
             System.out.println(getNombre() + " ha sido alimentada.");
             return true;
         } else {

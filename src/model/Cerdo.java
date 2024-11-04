@@ -1,6 +1,6 @@
-package Model;
+package model;
 
-import Files.GestionDB;
+import files.GestionDB;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Cerdo extends Animal implements Serializable {
 
 
-    public Cerdo(int id, String nombre, Model.TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
+    public Cerdo(int id, String nombre, model.TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
         super(id, nombre, tipo, diaInsercion, alimento, producto);
     }
 
@@ -35,12 +35,12 @@ public class Cerdo extends Animal implements Serializable {
     }
 
     @Override
-    public Model.TipoAnimal getTipo() {
+    public model.TipoAnimal getTipo() {
         return super.getTipo();
     }
 
     @Override
-    public void setTipo(Model.TipoAnimal tipo) {
+    public void setTipo(model.TipoAnimal tipo) {
         super.setTipo(tipo);
     }
 
@@ -95,7 +95,7 @@ public class Cerdo extends Animal implements Serializable {
             System.out.println(getNombre() + " ha sido alimentada.");
             return true;
         } else {
-            System.out.println("No hay suficiente alimento para " + getNombre() + ".");
+            System.out.println("No hay suficiente alimento para" + getNombre() + ".");
             return false;
         }
     }

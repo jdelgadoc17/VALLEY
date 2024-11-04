@@ -1,17 +1,14 @@
-package Model;
+package model;
 
-import Files.GestionDB;
+import files.GestionDB;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
-public class Oveja extends Animal implements Serializable {
-    private LocalDate fechaEsquilado;
+public class Gallina extends Animal implements Serializable {
 
-    public Oveja(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
+
+    public Gallina(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
         super(id, nombre, tipo, diaInsercion, alimento, producto);
-        this.fechaEsquilado = null;
     }
 
     @Override
@@ -33,6 +30,7 @@ public class Oveja extends Animal implements Serializable {
     public void setNombre(String nombre) {
         super.setNombre(nombre);
     }
+
 
     @Override
     public TipoAnimal getTipo() {
@@ -74,23 +72,18 @@ public class Oveja extends Animal implements Serializable {
         super.setProducto(producto);
     }
 
-    public LocalDate obtenerFechaUltimoEsquilado() {
-        return fechaEsquilado;
-    }
 
-    // Método para actualizar la fecha de esquilado
-    public void actualizarFechaEsquilado() {
-        this.fechaEsquilado = LocalDate.now();
-    }
 
-    public int producir() {
-        if (fechaEsquilado == null || ChronoUnit.DAYS.between(fechaEsquilado, LocalDate.now()) >= 2) {
-            actualizarFechaEsquilado();
-            return 5;
+
+    public int producir(int diaActual){
+        int diasEnJuego = diaActual - this.diaInsercion;
+        if (diasEnJuego > 3 && diasEnJuego <= 40) {
+            return 2;
+        } else if (diasEnJuego > 40) {
+            return 1;
         }
         return 0;
     }
-
 
     public boolean alimentar() {
         GestionDB gestionDB = GestionDB.getInstance();
@@ -109,16 +102,18 @@ public class Oveja extends Animal implements Serializable {
         }
     }
 
+
+
+
     @Override
     public String toString() {
-        return "Model.Oveja{" +
-                "producto=" + getProducto() +
-                ", alimento=" + getAlimento() +
-                ", diaInsercion=" + getDiaInsercion() +
-                ", tipo='" + getTipo() + '\'' +
-                ", nombre='" + getNombre() + '\'' +
-                ", id=" + getId() +
-                ", fechaEsquilado=" + (fechaEsquilado != null ? fechaEsquilado : "Nunca esquilada") +
+        return "Model.Gallina{" +
+                "producto=" + producto +
+                ", alimento=" + alimento +
+                ", diaInsercion=" + diaInsercion +
+                ", tipo='" + tipo + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", id=" + id +
                 '}';
     }
 }

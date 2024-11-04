@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.io.Serializable;
 
@@ -70,11 +70,12 @@ public abstract class Animal implements Serializable {
     }
 
 
-
-
     public boolean isAlimentado(){
         return true;
     }
+
+    public abstract int producir(int diaActual, TipoEstacion tipoEstacion);
+
 
     @Override
     public String toString() {
@@ -88,7 +89,8 @@ public abstract class Animal implements Serializable {
                 '}';
     }
 
-    public void setAlimentado(boolean b) {
+    public void setAlimentado(boolean b) { //CAMBIAR
+
 
     }
 }

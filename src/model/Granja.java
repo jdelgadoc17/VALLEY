@@ -1,7 +1,7 @@
-package Model;
+package model;
 
-import Files.FileWork;
-import Files.GestionDB;
+import files.FileWork;
+import files.GestionDB;
 
 
 import java.io.*;

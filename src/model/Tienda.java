@@ -1,5 +1,5 @@
-package Model;
-import Files.FileWork;
+package model;
+import files.FileWork;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;

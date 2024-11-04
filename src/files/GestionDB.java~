@@ -1,6 +1,6 @@
-package Files;
+package files;
 
-import Model.*;
+import model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -133,8 +133,8 @@ public class GestionDB {
         String updateProductos = "UPDATE Productos SET cantidad_disponible = 0 WHERE id = ?";
         String insertTransaccion = "INSERT INTO Transacciones (tipo_transaccion, tipo_elemento, precio, fecha_transaccion) VALUES ('VENTA', 'PRODUCTO', ?, NOW())";
 
-        double totalVenta = 0;
 
+        double totalVenta = 0;
         try (PreparedStatement selectStmt = connection.prepareStatement(queryProductos);
              ResultSet rs = selectStmt.executeQuery();
              PreparedStatement updateStmt = connection.prepareStatement(updateProductos);
@@ -174,7 +174,6 @@ public class GestionDB {
                     Animales.id, Animales.nombre, Animales.tipo, Animales.dia_insercion, Animales.peso,
                     Alimentos.id AS idAlimento, Alimentos.nombre AS nombreAlimento, Alimentos.precio AS precioAlimento, Alimentos.cantidad_disponible AS cantidadAlimento,
                     Productos.id AS idProducto, Productos.nombre AS nombreProducto, Productos.precio AS precioProducto, Productos.cantidad_disponible AS cantidadProducto
-                
                 FROM 
                     Animales
                 LEFT JOIN 
@@ -246,6 +245,8 @@ public class GestionDB {
 
     public void registrarConsumo(Animal animal, int cantidadConsumida) {
         String query = "INSERT INTO HistorialConsumo (id_animal, cantidad_consumida, fecha_consumo) VALUES (?, ?, NOW())";
+       //OTRO METODO String query2 = "UPDATE Productos SET cantidad_disponible = cantidad_disponible - ? WHERE id = ?";
+
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, animal.getId());
             stmt.setInt(2, cantidadConsumida);
@@ -257,20 +258,35 @@ public class GestionDB {
     }
 
     public void restaurarValores() {
-        String queryAlimentos = "UPDATE Alimentos SET cantidad_disponible = 0";
+
+        String queryAlimentos = "UPDATE Alimentos SET cantidad_disponible = 5";
         String queryProductos = "UPDATE Productos SET cantidad_disponible = 0";
+        String queryHistorialProduccion = "TRUNCATE TABLE HistorialProduccion";
+        String queryHistorialConsumo = "TRUNCATE TABLE HistorialConsumo";
+        String queryTransacciones = "TRUNCATE TABLE transacciones";
+
 
         try (
                 PreparedStatement stmtAlimentos = connection.prepareStatement(queryAlimentos);
-                PreparedStatement stmtProductos = connection.prepareStatement(queryProductos)
+                PreparedStatement stmtProductos = connection.prepareStatement(queryProductos);
+                Statement stmtHistorialProduccion = connection.prepareStatement(queryHistorialProduccion);
+                Statement stmtHistorialConsumo = connection.prepareStatement(queryHistorialConsumo);
+                Statement stmtTransacciones = connection.prepareStatement(queryTransacciones);
+
         ) {
             stmtAlimentos.executeUpdate();
             stmtProductos.executeUpdate();
-            System.out.println("Valores restaurados en Alimentos y Productos.");
+            stmtHistorialProduccion.executeUpdate(queryHistorialProduccion);
+            stmtHistorialConsumo.executeUpdate(queryHistorialConsumo);
+            stmtHistorialConsumo.executeUpdate(queryTransacciones);
+
+
+            System.out.println("Valores restaurados en Alimentos y Productos  y tablas de historial vaciadas.");
         } catch (SQLException e) {
             System.out.println("Error al restaurar valores en la base de datos: " + e.getMessage());
         }
     }
+
 
 
     public void actualizarCantidad(int id, int cantidad) {
