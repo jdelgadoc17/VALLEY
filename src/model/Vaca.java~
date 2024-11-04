@@ -1,5 +1,5 @@
-package Model;
-import Files.GestionDB;
+package model;
+import files.GestionDB;
 import java.io.Serializable;
 
 public class Vaca extends Animal implements Serializable {
@@ -18,10 +18,7 @@ public class Vaca extends Animal implements Serializable {
         this.peso = peso;
     }
 
-     public int producir() {
-        return (int) (0.01 * this.getPeso());
-    }
-
+    
 
     public boolean alimentar(int diaActual) {
         GestionDB gestionDB = GestionDB.getInstance();
@@ -51,6 +48,11 @@ public class Vaca extends Animal implements Serializable {
         }
     }
 
+
+    @Override
+    public int producir() {
+        return (int) (0.01 * this.getPeso());
+    }
 
     @Override
     public String toString() {

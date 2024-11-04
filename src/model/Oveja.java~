@@ -1,6 +1,6 @@
-package Model;
+package model;
 
-import Files.GestionDB;
+import files.GestionDB;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -72,6 +72,11 @@ public class Oveja extends Animal implements Serializable {
     @Override
     public void setProducto(Producto producto) {
         super.setProducto(producto);
+    }
+
+    @Override
+    public int producir(int diaActual, TipoEstacion tipoEstacion) {
+        return 0;
     }
 
     public LocalDate obtenerFechaUltimoEsquilado() {

@@ -10,6 +10,7 @@ public abstract class Animal implements Serializable {
     protected int diaInsercion;
     protected Alimento alimento;
     protected Producto producto;
+    private boolean alimentado;
 
     public Animal(int id, String nombre, TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
         this.id = id;
@@ -18,61 +19,31 @@ public abstract class Animal implements Serializable {
         this.diaInsercion = diaInsercion;
         this.alimento = alimento;
         this.producto = producto;
+        this.alimentado = false;  
     }
 
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public TipoAnimal getTipo() { return tipo; }
+    public void setTipo(TipoAnimal tipo) { this.tipo = tipo; }
+    public int getDiaInsercion() { return diaInsercion; }
+    public void setDiaInsercion(int diaInsercion) { this.diaInsercion = diaInsercion; }
+    public Alimento getAlimento() { return alimento; }
+    public void setAlimento(Alimento alimento) { this.alimento = alimento; }
+    public Producto getProducto() { return producto; }
+    public void setProducto(Producto producto) { this.producto = producto; }
 
-    public int getId() {
-        return id;
+    public boolean isAlimentado() {
+        return alimentado;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAlimentado(boolean alimentado) {
+        this.alimentado = alimentado;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public TipoAnimal getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoAnimal tipo) {
-        this.tipo = tipo;
-    }
-
-    public int getDiaInsercion() {
-        return diaInsercion;
-    }
-
-    public void setDiaInsercion(int diaInsercion) {
-        this.diaInsercion = diaInsercion;
-    }
-
-    public Alimento getAlimento() {
-        return alimento;
-    }
-
-    public void setAlimento(Alimento alimento) {
-        this.alimento = alimento;
-    }
-
-    public Producto getProducto() {
-        return producto;
-    }
-
-    public void setProducto(Producto producto) {
-        this.producto = producto;
-    }
-
-
-    public boolean isAlimentado(){
-        return true;
-    }
+    public abstract int producir(int diaActual, TipoEstacion tipoEstacion);
 
     @Override
     public String toString() {
@@ -83,11 +54,7 @@ public abstract class Animal implements Serializable {
                 ", diaInsercion=" + diaInsercion +
                 ", alimento=" + alimento +
                 ", producto=" + producto +
+                ", alimentado=" + alimentado +
                 '}';
-    }
-
-    public void setAlimentado(boolean b) { //CAMBIAR
-
-
     }
 }

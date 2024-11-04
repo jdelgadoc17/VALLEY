@@ -4,6 +4,7 @@ import files.GestionDB;
 
 import java.io.Serializable;
 
+import static model.TipoEstacion.*;
 
 
 public class Cerdo extends Animal implements Serializable {
@@ -74,13 +75,15 @@ public class Cerdo extends Animal implements Serializable {
         super.setProducto(producto);
     }
 
-    public int producir(TipoEstacion estacion) {
-        return switch (estacion) {
-            case TipoEstacion.PRIMAVERA, TipoEstacion.VERANO -> (int) (Math.random() * 2) + 2;
-            case TipoEstacion.OTOÑO -> (int) (Math.random() * 2);
+    @Override
+    public int producir(int diaActual, TipoEstacion tipoEstacion) {
+        return switch (tipoEstacion) {
+            case PRIMAVERA, VERANO -> (int) (Math.random() * 2) + 2;
+            case OTOÑO ->   (int) (Math.random() * 2);
             default -> 0;
         };
     }
+
 
 
     public boolean alimentar() {

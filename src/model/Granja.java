@@ -457,20 +457,13 @@ public class Granja implements Serializable {
 
         for (Animal animal : establo.getAnimales()) {
             if (animal.isAlimentado()) {
-                int cantidadProducida = 0;
+                int cantidadProducida = animal.producir(diaActual, tipoEstacion);  // Llamada al mEEtodo específico de cada animal
 
-                if (animal instanceof Gallina) {
-                    cantidadProducida = ((Gallina) animal).producir(diaActual);
-                    totalHuevos += cantidadProducida;
-                } else if (animal instanceof Oveja) {
-                    cantidadProducida = ((Oveja) animal).producir();
-                    totalLana += cantidadProducida;
-                } else if (animal instanceof Vaca) {
-                    cantidadProducida = ((Vaca) animal).producir();
-                    totalLeche += cantidadProducida;
-                } else if (animal instanceof Cerdo) {
-                    cantidadProducida = ((Cerdo) animal).producir(tipoEstacion);
-                    totalTrufas += cantidadProducida;
+                switch (animal.getTipo()) {
+                    case GALLINA -> totalHuevos += cantidadProducida;
+                    case OVEJA -> totalLana += cantidadProducida;
+                    case VACA -> totalLeche += cantidadProducida;
+                    case CERDO -> totalTrufas += cantidadProducida;
                 }
 
                 if (cantidadProducida > 0) {
@@ -487,6 +480,7 @@ public class Granja implements Serializable {
 
         mostrarResumenProduccion(totalHuevos, totalLana, totalLeche, totalTrufas);
     }
+
 
 
     public Establo getEstablo() {

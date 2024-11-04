@@ -74,6 +74,15 @@ public class Oveja extends Animal implements Serializable {
         super.setProducto(producto);
     }
 
+    @Override
+    public int producir(int diaActual, TipoEstacion tipoEstacion) {
+        if (fechaEsquilado == null || ChronoUnit.DAYS.between(fechaEsquilado, LocalDate.now()) >= 2) {
+            actualizarFechaEsquilado();
+            return 5;
+        }
+        return 0;
+    }
+
     public LocalDate obtenerFechaUltimoEsquilado() {
         return fechaEsquilado;
     }

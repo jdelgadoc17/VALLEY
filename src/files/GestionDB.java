@@ -176,9 +176,9 @@ public class GestionDB {
                     Productos.id AS idProducto, Productos.nombre AS nombreProducto, Productos.precio AS precioProducto, Productos.cantidad_disponible AS cantidadProducto
                 FROM 
                     Animales
-                LEFT JOIN 
+                INNER JOIN 
                     Alimentos ON Animales.id_alimento = Alimentos.id
-                LEFT JOIN 
+                INNER JOIN 
                     Productos ON Animales.id_producto = Productos.id
                 """;
 
@@ -251,7 +251,6 @@ public class GestionDB {
             stmt.setInt(1, animal.getId());
             stmt.setInt(2, cantidadConsumida);
             stmt.executeUpdate();
-            System.out.println("Consumo registrado en HistorialConsumo para el animal: " + animal.getNombre());
         } catch (SQLException e) {
             System.out.println("Error al registrar el consumo: " + e.getMessage());
         }
@@ -288,20 +287,37 @@ public class GestionDB {
 
 
 
-    public void actualizarCantidad(int id, int cantidad) {
-        String query = "UPDATE Productos SET cantidad_disponible = cantidad_disponible + ? WHERE id = ?";
+    public void actualizarCantidad(int idProducto, int cantidadCambio) {
+        String selectCantidadQuery = "SELECT cantidad_disponible FROM Productos WHERE id = ?";
+        String updateCantidadQuery = "UPDATE Productos SET cantidad_disponible = ? WHERE id = ?";
 
-        try (PreparedStatement stt = connection.prepareStatement(query)) {
-            stt.setInt(1, cantidad);
-            stt.setInt(2, id);
-            int num_cambiados = stt.executeUpdate();
-            System.out.println("UPDATE realizado con éxito, filas modificadas: " + num_cambiados);
+        try (
+                PreparedStatement selectStmt = connection.prepareStatement(selectCantidadQuery);
+                PreparedStatement updateStmt = connection.prepareStatement(updateCantidadQuery)
+        ) {
+            selectStmt.setInt(1, idProducto);
+            ResultSet rs = selectStmt.executeQuery();
 
+            if (rs.next()) {
+                int cantidadActual = rs.getInt("cantidad_disponible");
+                int nuevaCantidad = cantidadActual + cantidadCambio;
+
+                if (nuevaCantidad < 0) {
+                    nuevaCantidad = 0;
+                }
+
+                updateStmt.setInt(1, nuevaCantidad);
+                updateStmt.setInt(2, idProducto);
+                updateStmt.executeUpdate();
+
+            } else {
+                System.out.println("Producto no encontrado con el ID especificado.");
+            }
         } catch (SQLException e) {
-            System.out.println("Error en el UPDATE de PRODUCIR: " + e.getMessage());
-            throw new RuntimeException(e);
+            System.out.println("Error al actualizar la cantidad de producto: " + e.getMessage());
         }
     }
+
 
 
     public void registrarProduccion(Animal animal, int cantidadProducida, int diaActual) {

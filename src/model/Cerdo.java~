@@ -1,15 +1,16 @@
-package Model;
+package model;
 
-import Files.GestionDB;
+import files.GestionDB;
 
 import java.io.Serializable;
 
+import static model.TipoEstacion.*;
 
 
 public class Cerdo extends Animal implements Serializable {
 
 
-    public Cerdo(int id, String nombre, Model.TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
+    public Cerdo(int id, String nombre, model.TipoAnimal tipo, int diaInsercion, Alimento alimento, Producto producto) {
         super(id, nombre, tipo, diaInsercion, alimento, producto);
     }
 
@@ -35,12 +36,12 @@ public class Cerdo extends Animal implements Serializable {
     }
 
     @Override
-    public Model.TipoAnimal getTipo() {
+    public model.TipoAnimal getTipo() {
         return super.getTipo();
     }
 
     @Override
-    public void setTipo(Model.TipoAnimal tipo) {
+    public void setTipo(model.TipoAnimal tipo) {
         super.setTipo(tipo);
     }
 
@@ -74,13 +75,15 @@ public class Cerdo extends Animal implements Serializable {
         super.setProducto(producto);
     }
 
-    public int producir(TipoEstacion estacion) {
-        return switch (estacion) {
-            case TipoEstacion.PRIMAVERA, TipoEstacion.VERANO -> (int) (Math.random() * 2) + 2;
-            case TipoEstacion.OTOÑO -> (int) (Math.random() * 2);
+    @Override
+    public int producir(int diaActual, TipoEstacion tipoEstacion) {
+        return switch (tipoEstacion) {
+            case PRIMAVERA, VERANO -> (int) (Math.random() * 2) + 2; 
+            case OTOÑO ->   (int) (Math.random() * 2);
             default -> 0;
         };
     }
+
 
 
     public boolean alimentar() {

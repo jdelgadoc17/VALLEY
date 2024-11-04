@@ -18,9 +18,6 @@ public class Vaca extends Animal implements Serializable {
         this.peso = peso;
     }
 
-     public int producir() {
-        return (int) (0.01 * this.getPeso());
-    }
 
 
     public boolean alimentar(int diaActual) {
@@ -51,6 +48,12 @@ public class Vaca extends Animal implements Serializable {
         }
     }
 
+
+    @Override
+    public int producir(int diaActual, TipoEstacion tipoEstacion) {
+        return (int) (0.01 * this.getPeso());
+
+    }
 
     @Override
     public String toString() {
