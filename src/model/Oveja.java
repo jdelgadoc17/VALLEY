@@ -99,6 +99,10 @@ public class Oveja extends Animal implements Serializable {
         return 0;
     }
 
+    /*
+    Metodo de alimentar de la clase
+     */
+
 
     public boolean alimentar() {
         GestionDB gestionDB = GestionDB.getInstance();

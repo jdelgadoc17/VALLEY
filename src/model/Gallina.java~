@@ -84,7 +84,7 @@ public class Gallina extends Animal implements Serializable {
     }
 
 
-   
+
 
     public boolean alimentar() {
         GestionDB gestionDB = GestionDB.getInstance();

@@ -19,6 +19,9 @@ public class Vaca extends Animal implements Serializable {
     }
 
 
+    /*
+    Metodo de alimentar de la clase
+     */
 
     public boolean alimentar(int diaActual) {
         GestionDB gestionDB = GestionDB.getInstance();

@@ -43,6 +43,10 @@ public abstract class Animal implements Serializable {
         this.alimentado = alimentado;
     }
 
+    /*
+    Metodo abstracto
+     */
+
     public abstract int producir(int diaActual, TipoEstacion tipoEstacion);
 
     @Override

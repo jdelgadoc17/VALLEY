@@ -84,6 +84,10 @@ public class Cerdo extends Animal implements Serializable {
         };
     }
 
+    /*
+    Metodo de alimentacion
+     */
+
 
 
     public boolean alimentar() {

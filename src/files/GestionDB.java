@@ -15,6 +15,10 @@ public class GestionDB {
     private ArrayList<Animal> listaAnimales;
 
 
+    /*
+    Singleton de nuestro GestionDB
+     */
+
     private GestionDB() {
         listaAnimales = new ArrayList<>();
 
@@ -40,6 +44,10 @@ public class GestionDB {
         }
         return instancia;
     }
+
+    /*
+    Opcion de rellenar el comedero
+     */
 
     public void rellenarComedero(Granja granja) {
         String selectAlimentos = "SELECT id, cantidad_disponible, precio FROM Alimentos";
@@ -67,7 +75,6 @@ public class GestionDB {
 
                 if (granja.getPresupuesto() < costoAlimento) {
                     System.out.println("No hay recursos suficientes para comprar el alimento con ID " + idAlimento);
-                    continue;
                 }
 
                 updateStmt.setInt(1, idAlimento);
@@ -88,6 +95,10 @@ public class GestionDB {
         }
     }
 
+    /*
+    Mostramos los productos
+     */
+
     public void mostrarProductos() {
         String query = "SELECT id, nombre, precio, cantidad_disponible FROM Productos";
         try (Statement stmt = connection.createStatement();
@@ -107,6 +118,10 @@ public class GestionDB {
         }
     }
 
+    /*
+    Mostramos los alimentos
+     */
+
     public void mostrarAlimentos() {
         String query = "SELECT id, nombre, precio, cantidad_disponible FROM Alimentos";
         try (Statement stmt = connection.createStatement();
@@ -125,6 +140,10 @@ public class GestionDB {
             System.out.println("Error al mostrar alimentos: " + e.getMessage());
         }
     }
+
+    /*
+    Vendemos los productos existentes
+     */
 
 
 
@@ -166,7 +185,9 @@ public class GestionDB {
     }
 
 
-
+    /*
+    Cargamos los animales de la BBDD
+     */
 
     private void cargarAnimales() {
         String query = """
@@ -256,6 +277,10 @@ public class GestionDB {
         }
     }
 
+    /*
+    Restauramos a los valores iniciales
+     */
+
     public void restaurarValores() {
 
         String queryAlimentos = "UPDATE Alimentos SET cantidad_disponible = 5";
@@ -318,6 +343,10 @@ public class GestionDB {
         }
     }
 
+
+    /*
+    Metodos para registrar los historiales de prroduccion
+     */
 
 
     public void registrarProduccion(Animal animal, int cantidadProducida, int diaActual) {

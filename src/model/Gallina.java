@@ -84,6 +84,9 @@ public class Gallina extends Animal implements Serializable {
     }
 
 
+    /*
+    Metodo de alimentar de la clase
+     */
 
 
     public boolean alimentar() {
